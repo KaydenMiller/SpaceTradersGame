@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace SpaceTraders.Game.Pages;
+namespace SpaceTraders.Pages;
 
 public class SpaceTradersResponse<TData> 
     where TData: class

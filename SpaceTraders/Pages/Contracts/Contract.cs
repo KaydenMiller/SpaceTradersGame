@@ -1,7 +1,6 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace SpaceTraders.Game.Pages.Contracts;
+namespace SpaceTraders.Pages.Contracts;
 
 public class Contract
 {
