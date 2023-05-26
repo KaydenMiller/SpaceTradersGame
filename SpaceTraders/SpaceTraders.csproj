@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+        <UserSecretsId>ac81a1cd-43d2-4b72-b8fe-48b7e7c7005c</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
       <AdditionalFiles Include="Pages\Contracts\Contracts.razor" />
@@ -12,6 +13,12 @@
 
     <ItemGroup>
       <PackageReference Include="Flurl.Http" Version="3.2.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="appsettings.Development.json">
+        <DependentUpon>appsettings.json</DependentUpon>
+      </Content>
     </ItemGroup>
 
 </Project>
