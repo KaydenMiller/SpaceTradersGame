@@ -1,5 +1,6 @@
 using SpaceTraders.Data;
 using SpaceTraders.Pages.Contracts;
+using SpaceTraders.Pages.Player;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<ContractApiService>();
+builder.Services.AddSingleton<PlayerApiService>();
 
 var app = builder.Build();
 

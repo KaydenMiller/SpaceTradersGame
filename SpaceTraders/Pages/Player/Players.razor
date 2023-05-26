@@ -1,0 +1,41 @@
+﻿@page "/Player"
+@inject PlayerApiService PlayerApiService
+
+<h3>Player</h3>
+
+@if (@PlayerDetails == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Credits</th>
+            <th>Headquarters</th>
+            <th>Starting Faction</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>@PlayerDetails.Symbol</td>
+            <td>@PlayerDetails.Credits</td>
+            <td>@PlayerDetails.Headquarters</td>
+            <td>@PlayerDetails.StartingFaction</td>
+        </tr>
+        </tbody>
+    </table>
+}
+
+@code {
+    private Player? PlayerDetails { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.PlayerDetails = await PlayerApiService.GetPlayer();
+    }
+}

@@ -20,7 +20,7 @@ public class ContractApiService
            .AppendPathSegment("my")
            .AppendPathSegment("contracts")
            .WithOAuthBearerToken(_token)
-           .GetJsonAsync<SpaceTradersResponse<Contract>>();
+           .GetJsonAsync<SpaceTradersArrayResponse<Contract>>();
 
         return response.Data;
     }
