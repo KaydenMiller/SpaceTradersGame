@@ -1,0 +1,33 @@
+﻿@page "/contracts"
+@inject ContractApiService ContractApiService
+
+<h3>Contracts</h3>
+
+@if (_contracts is not null)
+{
+    @foreach (var contract in _contracts)
+    {
+        <div>
+            <h4>Contract Details:</h4>
+            <ul>
+                <li>ID: @contract.Id</li>
+                <li>Faction Symbol: @contract.FactionSymbol</li>
+            </ul>
+        </div>
+    }
+}
+else
+{
+    <div>
+        Loading...
+    </div>
+}
+
+@code {
+    private IEnumerable<Contract>? _contracts { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _contracts = await ContractApiService.GetContracts();
+    }
+}

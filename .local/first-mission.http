@@ -1,0 +1,3 @@
+﻿// Get Contracts
+GET https://api.spacetraders.io/v2/my/contracts
+Authorization: Bearer 

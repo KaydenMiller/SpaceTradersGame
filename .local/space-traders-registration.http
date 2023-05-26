@@ -1,0 +1,7 @@
+﻿POST https://api.spacetraders.io/v2/register
+Content-Type: application/json
+
+{
+  "symbol": "Death2142zerg",
+  "faction": "COSMIC"
+}
