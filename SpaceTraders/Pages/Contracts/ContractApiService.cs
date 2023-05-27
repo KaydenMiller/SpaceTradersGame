@@ -24,4 +24,19 @@ public class ContractApiService
 
         return response.Data;
     }
+
+    public async Task<AcceptContractResponse> AcceptContract(string contractId)
+    {
+        var response = await API
+           .AppendPathSegment("my")
+           .AppendPathSegment("contracts")
+           .AppendPathSegment(contractId)
+           .AppendPathSegment("accept")
+           .WithOAuthBearerToken(_token)
+           .PostAsync();
+
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<AcceptContractResponse>>();
+
+        return result.Data;
+    }
 }
