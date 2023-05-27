@@ -22,4 +22,14 @@ public class LocationApiService
         
         return response.Data;
     }
+
+    public async Task<IEnumerable<LocationInfo>> GetSystemInfo(Location location)
+    {
+        var response = await API
+            .AppendPathSegments("systems", location.System, "waypoints")
+            .WithOAuthBearerToken(this._token)
+            .GetJsonAsync<SpaceTradersArrayResponse<LocationInfo>>();
+
+        return response.Data;
+    }
 }

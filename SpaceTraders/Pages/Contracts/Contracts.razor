@@ -1,7 +1,8 @@
 ﻿@page "/contracts"
 @inject ContractApiService ContractApiService
 
-<h3>Contracts</h3>
+<MudPaper Class="pa-16 ma-2" Elevation="3">
+    <h3>Contracts</h3>
 
 @if (_contracts is not null)
 {
@@ -22,6 +23,8 @@ else
         Loading...
     </div>
 }
+
+</MudPaper>
 
 @code {
     private IEnumerable<Contract>? _contracts { get; set; }
