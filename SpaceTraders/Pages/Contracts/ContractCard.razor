@@ -1,0 +1,45 @@
+﻿<MudCard>
+    <MudCardContent>
+        <MudText>@Contract.FactionSymbol</MudText>
+        <MudText Typo="Typo.body2">@Contract.Type</MudText>
+        <MudText Typo="Typo.body2">Expires: @Contract.Expiration</MudText>
+    </MudCardContent>
+    <MudCardContent>
+        <MudText Typo="Typo.body1">
+           <ul>
+               <li>Accepted: @Contract.Accepted</li>
+               <li>Fulfilled: @Contract.Fulfilled</li>
+               <li>Deadline To Accept: @Contract.DeadlineToAccept</li>
+               <li>Terms:</li>
+               <ul>
+                   <li>Deadline: @Contract.Terms.Deadline</li>
+                   <li>Payment:</li>
+                   <ul>
+                       <li>On Accepted: @Contract.Terms.Payment.OnAccepted</li>
+                       <li>On Fulfilled: @Contract.Terms.Payment.OnFulfilled</li>
+                   </ul>
+                   <li>Required Deliveries:</li>
+                   <ul>
+                       @foreach (var delivery in Contract.Terms.Deliveries ?? Enumerable.Empty<Contract.ContractTerms.Delivery>())
+                       {
+                           <li>Trade Symbol: @delivery.TradeSymbol</li>
+                           <li>Destination Symbol: @delivery.DestinationSymbol</li>
+                           <li>Units Required: @delivery.UnitsRequired</li>
+                           <li>Units Fulfilled: @delivery.UnitsFulfilled</li>
+                       }
+                   </ul>
+               </ul>
+           </ul> 
+        </MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">ACCEPT</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+
+    [Parameter]
+    public Contract Contract { get; set; } = default!;
+
+}
