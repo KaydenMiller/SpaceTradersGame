@@ -1,15 +1,11 @@
-﻿<div class="nav-item px-3">
-    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-        <span class="oi oi-home" aria-hidden="true"></span> Home
-    </NavLink>
-</div>
-<div class="nav-item px-3">
-    <NavLink class="nav-link" href="contracts">
-        <span class="oi oi-list-rich" aria-hidden="true"></span>Contracts
-    </NavLink>
-</div>
-<div class="nav-item px-3">
-    <NavLink class="nav-link" href="Player">
-        <span class="oi oi-list-rich" aria-hidden="true"></span>Player
-    </NavLink>
-</div>
+﻿<MudPaper Elevation="0">
+    <MudNavMenu>
+        <MudText Typo="Typo.h6">SpaceTraders</MudText>
+        <MudText Typo="Typo.body2">A space game</MudText>
+        <MudDivider/>
+        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+        <MudNavLink Href="/contracts" Icon="@Icons.Material.Filled.Receipt">Contracts</MudNavLink>
+        <MudNavLink Href="/player" Icon="@Icons.Material.Filled.Person">Player</MudNavLink>
+        <MudNavLink Href="/locations" Icon="@Icons.Material.Filled.LocationCity">Locations</MudNavLink>
+    </MudNavMenu>
+</MudPaper>
