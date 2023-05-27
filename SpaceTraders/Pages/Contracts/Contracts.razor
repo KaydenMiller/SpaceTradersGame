@@ -1,55 +1,52 @@
 ﻿@page "/contracts"
 @inject ContractApiService ContractApiService
 
-<MudPaper Class="pa-16 ma-2" Elevation="3">
-    <h3>Contracts</h3>
+<h3>Contracts</h3>
 
-    @if (_contracts is not null)
-    {
-        @foreach (var contract in _contracts)
-        {
-            <div>
-                <h4>Contract Details:</h4>
-                <ul>
-                    <li>ID: @contract.Id</li>
-                    <li>Faction Symbol: @contract.FactionSymbol</li>
-                    <li>Type: @contract.Type</li>
-                    <li>Accepted: @contract.Accepted</li>
-                    <li>Fulfilled: @contract.Fulfilled</li>
-                    <li>Expiration: @contract.Expiration</li>
-                    <li>Deadline To Accept: @contract.DeadlineToAccept</li>
-                    <li>Terms:</li>
-                    <ul>
-                        <li>Deadline: @contract.Terms.Deadline</li>
-                        <li>Payment:</li>
-                        <ul>
-                            <li>On Accepted: @contract.Terms.Payment.OnAccepted</li>
-                            <li>On Fulfilled: @contract.Terms.Payment.OnFulfilled</li>
-                        </ul>
-                        <li>Required Deliveries:</li>
-                        <ul>
-                            @foreach (var delivery in contract.Terms.Deliveries ?? Enumerable.Empty<Contract.ContractTerms.Delivery>())
-                            {
-                                <li>Trade Symbol: @delivery.TradeSymbol</li>
-                                <li>Destination Symbol: @delivery.DestinationSymbol</li>
-                                <li>Units Required: @delivery.UnitsRequired</li>
-                                <li>Units Fulfilled: @delivery.UnitsFulfilled</li>
-                            }
-                        </ul>
-                    </ul>
-                </ul>
-                <button @onclick="@(async () => await AcceptContract(contract.Id))">ACCEPT</button>
-            </div>
-        }
-    }
-    else
+@if (_contracts is not null)
+{
+    @foreach (var contract in _contracts)
     {
         <div>
-            Loading...
+            <h4>Contract Details:</h4>
+            <ul>
+                <li>ID: @contract.Id</li>
+                <li>Faction Symbol: @contract.FactionSymbol</li>
+                <li>Type: @contract.Type</li>
+                <li>Accepted: @contract.Accepted</li>
+                <li>Fulfilled: @contract.Fulfilled</li>
+                <li>Expiration: @contract.Expiration</li>
+                <li>Deadline To Accept: @contract.DeadlineToAccept</li> 
+                <li>Terms:</li>
+                <ul>
+                    <li>Deadline: @contract.Terms.Deadline</li>
+                    <li>Payment:</li>
+                    <ul>
+                        <li>On Accepted: @contract.Terms.Payment.OnAccepted</li>
+                        <li>On Fulfilled: @contract.Terms.Payment.OnFulfilled</li>
+                    </ul>
+                    <li>Required Deliveries:</li>
+                    <ul>
+                        @foreach (var delivery in contract.Terms.Deliveries ?? Enumerable.Empty<Contract.ContractTerms.Delivery>())
+                        {
+                            <li>Trade Symbol: @delivery.TradeSymbol</li>
+                            <li>Destination Symbol: @delivery.DestinationSymbol</li>
+                            <li>Units Required: @delivery.UnitsRequired</li>
+                            <li>Units Fulfilled: @delivery.UnitsFulfilled</li>
+                        }
+                    </ul>
+                </ul>
+            </ul>
+            <button @onclick="@(async () => await AcceptContract(contract.Id))">ACCEPT</button>
         </div>
     }
-
-</MudPaper>
+}
+else
+{
+    <div>
+        Loading...
+    </div>
+}
 
 @code {
     private IEnumerable<Contract>? _contracts { get; set; }

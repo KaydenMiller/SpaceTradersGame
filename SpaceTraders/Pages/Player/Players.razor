@@ -1,40 +1,35 @@
 ﻿@page "/Player"
 @inject PlayerApiService PlayerApiService
 
+<h3>Player</h3>
 
-<MudPaper Class="pa-16 ma-2" Elevation="3">
-    <h3>Player</h3>
-
-    @if (@PlayerDetails == null)
-    {
-        <p>
-            <em>Loading...</em>
-        </p>
-    }
-    else
-    {
-        // default tables look weired in mud theme
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Symbol</th>
-                <th>Credits</th>
-                <th>Headquarters</th>
-                <th>Starting Faction</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>@PlayerDetails.Symbol</td>
-                <td>@PlayerDetails.Credits</td>
-                <td>@PlayerDetails.Headquarters</td>
-                <td>@PlayerDetails.StartingFaction</td>
-            </tr>
-            </tbody>
-        </table>
-    }
-</MudPaper>
-
+@if (@PlayerDetails == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Credits</th>
+            <th>Headquarters</th>
+            <th>Starting Faction</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>@PlayerDetails.Symbol</td>
+            <td>@PlayerDetails.Credits</td>
+            <td>@PlayerDetails.Headquarters</td>
+            <td>@PlayerDetails.StartingFaction</td>
+        </tr>
+        </tbody>
+    </table>
+}
 
 @code {
     private Player? PlayerDetails { get; set; }
