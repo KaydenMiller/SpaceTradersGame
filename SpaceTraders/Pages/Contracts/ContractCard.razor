@@ -1,35 +1,33 @@
 ﻿<MudCard>
-    <MudCardContent>
-        <MudText>@Contract.FactionSymbol</MudText>
+    <MudCardHeader>
+        <CardHeaderContent>
+        <MudText Typo="Typo.h6">@Contract.FactionSymbol</MudText>
         <MudText Typo="Typo.body2">@Contract.Type</MudText>
         <MudText Typo="Typo.body2">Expires: @Contract.Expiration</MudText>
-    </MudCardContent>
+        </CardHeaderContent>
+    </MudCardHeader>
     <MudCardContent>
-        <MudText Typo="Typo.body1">
-           <ul>
-               <li>Accepted: @Contract.Accepted</li>
-               <li>Fulfilled: @Contract.Fulfilled</li>
-               <li>Deadline To Accept: @Contract.DeadlineToAccept</li>
-               <li>Terms:</li>
-               <ul>
-                   <li>Deadline: @Contract.Terms.Deadline</li>
-                   <li>Payment:</li>
-                   <ul>
-                       <li>On Accepted: @Contract.Terms.Payment.OnAccepted</li>
-                       <li>On Fulfilled: @Contract.Terms.Payment.OnFulfilled</li>
-                   </ul>
-                   <li>Required Deliveries:</li>
-                   <ul>
-                       @foreach (var delivery in Contract.Terms.Deliveries ?? Enumerable.Empty<Contract.ContractTerms.Delivery>())
-                       {
-                           <li>Trade Symbol: @delivery.TradeSymbol</li>
-                           <li>Destination Symbol: @delivery.DestinationSymbol</li>
-                           <li>Units Required: @delivery.UnitsRequired</li>
-                           <li>Units Fulfilled: @delivery.UnitsFulfilled</li>
-                       }
-                   </ul>
-               </ul>
-           </ul> 
+        <MudText Typo="Typo.body2">
+            <MudList Dense="true">
+                <MudListItem>Accepted: @Contract.Accepted</MudListItem>
+                <MudListItem>Fulfilled: @Contract.Fulfilled</MudListItem>
+                <MudListItem>Accept Deadline: @Contract.DeadlineToAccept</MudListItem>
+                <MudListItem>Delivery Deadline: @Contract.Terms.Deadline</MudListItem>
+                <MudListItem>Payment on Accepted: @Contract.Terms.Payment.OnAccepted</MudListItem>
+                <MudListItem>Payment on Fulfilled: @Contract.Terms.Payment.OnFulfilled</MudListItem>
+            </MudList>
+            <MudTreeView T="string" Dense="true">
+                <MudTreeViewItem Value="@("Required Deliveries")">
+                    @foreach (var delivery in Contract.Terms.Deliveries ?? Enumerable.Empty<Contract.ContractTerms.Delivery>())
+                    {
+                        <MudTreeViewItem Value="@delivery.TradeSymbol">
+                            <MudTreeViewItem Value="@("Destination Symbol: " + delivery.DestinationSymbol)"></MudTreeViewItem>
+                            <MudTreeViewItem Value="@("Units Required: " + delivery.UnitsRequired)"></MudTreeViewItem>
+                            <MudTreeViewItem Value="@("Units Fulfilled: " + delivery.UnitsFulfilled)"></MudTreeViewItem>
+                        </MudTreeViewItem>
+                    }
+                </MudTreeViewItem>
+            </MudTreeView>
         </MudText>
     </MudCardContent>
     <MudCardActions>
