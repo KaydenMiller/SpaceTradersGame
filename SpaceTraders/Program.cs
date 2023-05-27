@@ -1,4 +1,3 @@
-using SpaceTraders.Data;
 using SpaceTraders.Pages.Contracts;
 using SpaceTraders.Pages.Player;
 
@@ -7,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<ContractApiService>();
 builder.Services.AddSingleton<PlayerApiService>();
 
