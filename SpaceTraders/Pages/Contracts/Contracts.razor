@@ -37,6 +37,7 @@
                     </ul>
                 </ul>
             </ul>
+            <button @onclick="@(async () => await AcceptContract(contract.Id))">ACCEPT</button>
         </div>
     }
 }
@@ -51,6 +52,17 @@ else
     private IEnumerable<Contract>? _contracts { get; set; }
 
     protected override async Task OnInitializedAsync()
+    {
+        await UpdateContracts();
+    }
+
+    private async Task AcceptContract(string contractId)
+    {
+        _ = await ContractApiService.AcceptContract(contractId);
+        await UpdateContracts();
+    }
+
+    private async Task UpdateContracts()
     {
         _contracts = await ContractApiService.GetContracts();
     }
