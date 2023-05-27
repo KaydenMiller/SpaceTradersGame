@@ -5,10 +5,11 @@ namespace SpaceTraders.Pages.Location;
 
 public class LocationInfo
 {
-    [JsonPropertyName("systemSymbol")]
+    [JsonPropertyName("systemSymbol")] 
     public string SystemSymbol { get; set; }
     [JsonPropertyName("symbol")]
     public string Symbol { get; set; }
+    // Type can probably me a enum of some kind: PLANT, MOON, ORBITAL STATION
     [JsonPropertyName("type")]
     public string Type { get; set; }
     [JsonPropertyName("x")]
@@ -16,9 +17,9 @@ public class LocationInfo
     [JsonPropertyName("y")]
     public int Y { get; set; }
     [JsonPropertyName("orbitals")]
-    public Orbitals Orbitals { get; set; }
+    public IEnumerable<Orbital> Orbitals { get; set; }
     [JsonPropertyName("traits")]
-    public Traits Traits { get; set; }
+    public IEnumerable<Trait> Traits { get; set; }
     [JsonPropertyName("chart")]
     public Chart Chart { get; set; }
     [JsonPropertyName("faction")]
@@ -26,13 +27,16 @@ public class LocationInfo
     
 }
 
-public class Orbitals
+public class Orbital
 {
-    [JsonPropertyName("location")]
+    private Location _symbol;
+    
+    [JsonPropertyName("symbol")]
+    [JsonConverter(typeof(LocationJsonConverter))]
     public Location Symbol { get; set; }
 }
 
-public class Traits
+public class Trait
 {
     // name and symbol can probably become enums of some sort
     [JsonPropertyName("symbol")]

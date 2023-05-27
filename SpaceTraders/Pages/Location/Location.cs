@@ -30,10 +30,24 @@ public struct Location
         this._waypoint = waypoint;
     }
 
-    static Location CreateFromWaypoint(string waypoint)
+    public static Location CreateFromWaypoint(string waypoint)
     {
         // TODO: validate waypoint string here
         var waypointList = waypoint.Split("-");
         return new Location(waypointList[0], waypointList[1], waypointList[2]);
+    }
+
+    public override string ToString()
+    {
+        if (Waypoint is not null)
+        {
+            return Waypoint;
+        } 
+        if (System is not null)
+        {
+            return System;
+        }
+
+        return Sector;
     }
 }
