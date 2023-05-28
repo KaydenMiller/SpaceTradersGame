@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using MudBlazor;
 using SpaceTraders.Pages.Location;
 
 namespace SpaceTraders.Pages.ShipYard;

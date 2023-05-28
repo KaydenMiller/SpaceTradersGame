@@ -19,7 +19,7 @@ public class ShipYardApiService
             .AppendPathSegments("systems", location.System, "waypoints", location.Waypoint, "shipyard")
             .WithOAuthBearerToken(this._token)
             .GetJsonAsync<SpaceTradersObjectResponse<ShipYard>>();
-
+        
         return response.Data;
     }
     
