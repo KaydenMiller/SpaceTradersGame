@@ -9,7 +9,7 @@ public class LocationInfo
     public string SystemSymbol { get; set; }
     [JsonPropertyName("symbol")]
     public string Symbol { get; set; }
-    // Type can probably me a enum of some kind: PLANT, MOON, ORBITAL STATION
+    // Type can probably me a enum of some kind: https://github.com/SpaceTradersAPI/api-docs/blob/main/models/WaypointType.json
     [JsonPropertyName("type")]
     public string Type { get; set; }
     [JsonPropertyName("x")]
