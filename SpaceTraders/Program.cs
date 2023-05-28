@@ -1,5 +1,6 @@
 using MudBlazor.Services;
 using SpaceTraders.Pages.Contracts;
+using SpaceTraders.Pages.Location;
 using SpaceTraders.Pages.Player;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
 builder.Services.AddSingleton<ContractApiService>();
 builder.Services.AddSingleton<PlayerApiService>();
+builder.Services.AddSingleton<LocationApiService>();
 
 var app = builder.Build();
 

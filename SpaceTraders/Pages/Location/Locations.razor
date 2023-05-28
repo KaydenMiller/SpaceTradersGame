@@ -1,8 +1,51 @@
 ﻿@page "/locations"
-<MudPaper Class="pa-16 ma-2" Elevation="3">
-    <h3>Locations</h3>
-</MudPaper>
+@using SpaceTraders.Pages.Player
+@inject LocationApiService LocationApiService;
+@inject PlayerApiService PlayerApiService;
+
+<MudDataGrid T="LocationInfo" Items="@LocationInfos" SortMode="SortMode.Multiple" Filterable="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Locations</MudText>
+        <MudSpacer />
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn T="LocationInfo" TProperty="string" Property="info =>  info.Symbol"/>
+        <PropertyColumn T="LocationInfo" TProperty="bool" Property="info => HasShipYard(info)" Title="Ship Yard"/>
+        <PropertyColumn T="LocationInfo" TProperty="bool" Property="info => HasMarketPlace(info)" Title="Market Place"/>
+        <PropertyColumn T="LocationInfo" TProperty="string" Property="info => info.Type"/>
+        <PropertyColumn T="LocationInfo" TProperty="string" Property="info => BuildCords(info)" Title="Cords" Filterable="false" Sortable="false"/>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="LocationInfo" />
+    </PagerContent>
+</MudDataGrid>
+
+
 
 @code {
-    
+    private IEnumerable<LocationInfo>? LocationInfos { get; set; }
+    private Location Location { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var playerInfo = await PlayerApiService.GetPlayer();
+        this.Location = Location.CreateFromWaypoint(playerInfo.Headquarters);
+        this.LocationInfos = await LocationApiService.GetSystemInfo(this.Location);
+    }
+
+    private bool HasShipYard(LocationInfo locationInfo)
+    {
+        return locationInfo.Traits.Any(x => x.Symbol == "SHIPYARD");
+    }
+
+    private bool HasMarketPlace(LocationInfo locationInfo)
+    {
+        return locationInfo.Traits.Any(x => x.Symbol == "MARKETPLACE");
+    }
+
+    private string BuildCords(LocationInfo locationInfo)
+    {
+        return locationInfo.X + ", " + locationInfo.Y;
+    }
+
 }
