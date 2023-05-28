@@ -1,0 +1,13 @@
+﻿@page "/ShipYard"
+@inject ShipYardApiService ShipYardApiService;
+
+<h3>ShipYard</h3>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        var test = await ShipYardApiService.TestCall();
+        Console.WriteLine(test);
+    }
+}
