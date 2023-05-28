@@ -5,7 +5,7 @@
 @inject PlayerApiService PlayerApiService;
 @inject NavigationManager NavigationManager;
 
-<MudDataGrid T="LocationInfo" Items="@LocationInfos" SortMode="SortMode.Multiple" Filterable="true">
+<MudDataGrid T="LocationInfo" Items="@LocationInfos" SortMode="SortMode.Multiple" Filterable="true" >
     <ToolBarContent>
         <MudText Typo="Typo.h6">Locations: @Location.ToString()</MudText>
         <MudSpacer />
@@ -13,7 +13,7 @@
     <Columns>
         <PropertyColumn T="LocationInfo" TProperty="string" Property="info =>  info.Symbol"/>
         @* <PropertyColumn T="LocationInfo" TProperty="bool" Property="info => HasShipYard(info)" Title="Ship Yard" /> *@
-        <TemplateColumn Title="Has Ship Yard" T="LocationInfo">
+        <TemplateColumn Title="Ship Yard" T="LocationInfo" >
             <CellTemplate>
                 <MudText @onclick="@(() => GoToShipYard(context.Item))">@HasShipYard(context.Item)</MudText>
             </CellTemplate>
@@ -62,13 +62,4 @@
             NavigationManager.NavigateTo("/ShipYard/" + location.Symbol);
         }
     }
-
-    private void RowClick(DataGridRowClickEventArgs<LocationInfo> location )
-    {
-        if (this.HasShipYard(location.Item))
-        {
-            NavigationManager.NavigateTo("/ShipYard/" + location.Item.Symbol);
-        }
-    }
-
 }
