@@ -7,21 +7,29 @@ public class LocationInfo
 {
     [JsonPropertyName("systemSymbol")] 
     public string SystemSymbol { get; set; }
+    
     [JsonPropertyName("symbol")]
     public string Symbol { get; set; }
+    
     // Type can probably me a enum of some kind: https://github.com/SpaceTradersAPI/api-docs/blob/main/models/WaypointType.json
     [JsonPropertyName("type")]
     public string Type { get; set; }
+    
     [JsonPropertyName("x")]
     public int X { get; set; }
+    
     [JsonPropertyName("y")]
     public int Y { get; set; }
+    
     [JsonPropertyName("orbitals")]
     public IEnumerable<Orbital> Orbitals { get; set; }
+    
     [JsonPropertyName("traits")]
     public IEnumerable<Trait> Traits { get; set; }
+    
     [JsonPropertyName("chart")]
     public Chart Chart { get; set; }
+    
     [JsonPropertyName("faction")]
     public Faction Faction { get; set; }
     
