@@ -1,15 +1,18 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using SpaceTraders.Pages.Location;
 
 namespace SpaceTraders.Pages.ShipYard;
 
 public class ShipYard
 {
     [JsonPropertyName("symbol")]
+    [JsonConverter(typeof(LocationJsonConverter))]
     public Location.Location Symbol { get; set; }
     [JsonPropertyName("shipTypes")]
-    public IEnumerable<ShipType> ShipTypes { get; set; }
+    public IEnumerable<ShipType> Ships { get; set; }
 }
 
 public class ShipType
@@ -20,6 +23,7 @@ public class ShipType
 
 // API returns names in this format
 [SuppressMessage("ReSharper", "InconsistentNaming")]
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ShipTypes
 {
     [EnumMember(Value = "SHIP_PROBE")]
