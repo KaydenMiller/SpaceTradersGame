@@ -1,8 +1,8 @@
-﻿@page "/ShipYard/{Waypoint}"
+﻿@page "/ShipYard/{WaypointString}"
 @using SpaceTraders.Pages.Location
 @inject ShipYardApiService ShipYardApiService;
 
-@if (Waypoint is not null)
+@if (WaypointString is not null)
 {
     <MudDataGrid T="ShipType" Items="@Ships" SortMode="SortMode.Multiple" Filterable="true">
         <ToolBarContent>
@@ -11,6 +11,16 @@
         </ToolBarContent>
         <Columns>
             <PropertyColumn T="ShipType" TProperty="string" Property="ship => ship.Type.ToString()" Title="Ship Types"/>
+            <TemplateColumn T="ShipType" CellClass="d-flex" Filterable="false" Sortable="false">
+                <CellTemplate>
+                    <MudStack Row>
+                        <MudButton Size="Size.Small" Variant="@Variant.Filled" Color="Color.Primary"
+                                   @onclick="(() => BuyShip(context.Item))">
+                            Buy
+                        </MudButton>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
         </Columns>
     </MudDataGrid>
 }
@@ -20,21 +30,26 @@ else
 }
 
 @code {
-
     [Parameter]
-    public string? Waypoint { get; set; }
-
+    public string? WaypointString { get; set; }
+    
+    private Location Waypoint { get; set; }
     private ShipYard? ShipYardDetails { get; set; }
     private IEnumerable<ShipType>? Ships { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (Waypoint is not null)
+        if (WaypointString is not null)
         {
-            var location = Location.CreateFromWaypoint(Waypoint);
-            ShipYardDetails = await ShipYardApiService.GetShipYard(location);
+            this.Waypoint = Location.CreateFromWaypoint(WaypointString);
+            ShipYardDetails = await ShipYardApiService.GetShipYard(this.Waypoint);
             Ships = ShipYardDetails.Ships;
         }
+    }
+
+    private async void BuyShip(ShipType ship)
+    {
+        await ShipYardApiService.BuyShip(this.Waypoint, ship);
     }
 
 }

@@ -31,4 +31,20 @@ public class ShipYardApiService
 
         return response.Data;
     }
+    
+    public async Task<ShipyardTransaction> BuyShip(Location.Location location, ShipType shipType)
+    {
+
+        var response = await SpaceTradersApi.API_ROOT
+            .AppendPathSegments("my", "ships")
+            .WithOAuthBearerToken(_api.ApiToken)
+            .PostJsonAsync(new
+            {
+                shipType = shipType,
+                waypointSymbol = location.ToString()
+            });
+
+        return (await response.GetJsonAsync<SpaceTradersObjectResponse<ShipyardTransaction>>()).Data;
+    }
+    
 }
