@@ -5,20 +5,19 @@ namespace SpaceTraders.Pages.Player;
 
 public class PlayerApiService
 {
-    public const string API = "https://api.spacetraders.io/v2";
-    private string _token;
+    private readonly SpaceTradersApi _api;
 
-    public PlayerApiService(IConfiguration configuration)
+    public PlayerApiService(SpaceTradersApi api)
     {
-        this._token = configuration["SpaceTraders:ApiKey"]!;
+        _api = api;
     }
     
     public async Task<Player> GetPlayer()
     {
-        var response = await API
+        var response = await SpaceTradersApi.API_ROOT 
             .AppendPathSegment("my")
             .AppendPathSegment("agent")
-            .WithOAuthBearerToken(this._token)
+            .WithOAuthBearerToken(_api.ApiToken)
             .GetJsonAsync<SpaceTradersObjectResponse<Player>>();
         
         return response.Data;

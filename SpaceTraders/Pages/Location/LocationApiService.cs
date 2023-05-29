@@ -5,19 +5,18 @@ namespace SpaceTraders.Pages.Location;
 
 public class LocationApiService
 {
-    public const string API = "https://api.spacetraders.io/v2";
-    private string _token;
+    private readonly SpaceTradersApi _api;
 
-    public LocationApiService(IConfiguration configuration)
+    public LocationApiService(SpaceTradersApi api)
     {
-        this._token = configuration["SpaceTraders:ApiKey"]!;
+        _api = api;
     }
 
     public async Task<LocationInfo> GetLocationInfo(Location location)
     {
-        var response = await API
+        var response = await SpaceTradersApi.API_ROOT 
             .AppendPathSegments("systems", location.System, "waypoints", location.Waypoint)
-            .WithOAuthBearerToken(this._token)
+            .WithOAuthBearerToken(_api.ApiToken)
             .GetJsonAsync<SpaceTradersObjectResponse<LocationInfo>>();
         
         return response.Data;
@@ -25,9 +24,9 @@ public class LocationApiService
 
     public async Task<IEnumerable<LocationInfo>> GetSystemInfo(Location location)
     {
-        var response = await API
+        var response = await SpaceTradersApi.API_ROOT 
             .AppendPathSegments("systems", location.System, "waypoints")
-            .WithOAuthBearerToken(this._token)
+            .WithOAuthBearerToken(_api.ApiToken)
             .GetJsonAsync<SpaceTradersArrayResponse<LocationInfo>>();
 
         return response.Data;

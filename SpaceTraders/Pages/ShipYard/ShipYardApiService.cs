@@ -5,19 +5,18 @@ namespace SpaceTraders.Pages.ShipYard;
 
 public class ShipYardApiService
 {
-    public const string API = "https://api.spacetraders.io/v2";
-    private string _token;
+    private readonly SpaceTradersApi _api;
 
-    public ShipYardApiService(IConfiguration configuration)
+    public ShipYardApiService(SpaceTradersApi api)
     {
-        this._token = configuration["SpaceTraders:ApiKey"]!;
+        _api = api;
     }
 
     public async Task<ShipYard> GetShipYard(Location.Location location)
     {
-        var response = await API
+        var response = await SpaceTradersApi.API_ROOT 
             .AppendPathSegments("systems", location.System, "waypoints", location.Waypoint, "shipyard")
-            .WithOAuthBearerToken(this._token)
+            .WithOAuthBearerToken(_api.ApiToken)
             .GetJsonAsync<SpaceTradersObjectResponse<ShipYard>>();
         
         return response.Data;
@@ -25,9 +24,9 @@ public class ShipYardApiService
     
     public async Task<ShipYard> TestCall()
     {
-        var response = await API
+        var response = await SpaceTradersApi.API_ROOT 
             .AppendPathSegments("systems", "X1-VS75", "waypoints", "X1-VS75-97637F", "shipyard")
-            .WithOAuthBearerToken(this._token)
+            .WithOAuthBearerToken(_api.ApiToken)
             .GetJsonAsync<SpaceTradersObjectResponse<ShipYard>>();
 
         return response.Data;

@@ -22,4 +22,8 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SpaceTraders.Core\SpaceTraders.Core.csproj" />
+    </ItemGroup>
+
 </Project>
