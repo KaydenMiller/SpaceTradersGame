@@ -1,0 +1,40 @@
+﻿@using SpaceTraders.Core
+@inject NavigationManager NavigationManager
+
+<MudPaper Elevation="3">
+    <MudDataGrid Items="@OwnedShips" 
+                 Filterable="false" 
+                 SortMode="@SortMode.None" 
+                 Groupable="false"
+                 T="Ship">
+        <Columns>
+            <PropertyColumn T="Ship" TProperty="string" Property="x => x.Id"/>
+            <PropertyColumn T="Ship" TProperty="string" Property="x => x.Registration.Name"/> 
+            <PropertyColumn T="Ship" TProperty="string" Property="x => x.Registration.FactionSymbol"/> 
+            <PropertyColumn T="Ship" TProperty="string" Property="x => x.Registration.Role.ToString()" Title="Role"/> 
+            <TemplateColumn T="Ship">
+                <CellTemplate>
+                    <MudStack>
+                        <MudButton Size="Size.Small" 
+                                   Variant="Variant.Filled" 
+                                   Color="Color.Primary"
+                                   OnClick="@(() => NavigateToShipDetails(context.Item.Id))">INFO</MudButton>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</MudPaper>
+
+
+@code {
+
+    [Parameter]
+    public IEnumerable<Ship> OwnedShips { get; set; } = Enumerable.Empty<Ship>();
+
+    private void NavigateToShipDetails(string shipSymbol)
+    {
+        NavigationManager.NavigateTo("ship-detail/" + shipSymbol);
+    }
+
+}

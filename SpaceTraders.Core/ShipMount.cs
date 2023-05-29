@@ -17,7 +17,7 @@ public class ShipMount
     public int Strength { get; set; }
 
     [JsonPropertyName("deposits")]
-    public OreDeposits ValidOreDeposits { get; set; }
+    public IEnumerable<OreDeposits> ValidOreDeposits { get; set; }
 
     [JsonPropertyName("requirements")]
     public Requirements Requirements { get; set; }

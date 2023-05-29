@@ -16,6 +16,7 @@ FlurlHttp.Configure(settings =>
 {
     var options = new JsonSerializerOptions(JsonSerializerOptions.Default);
     options.Converters.Add(new JsonStringEnumConverter());
+    options.Converters.Add(new LocationJsonConverter());
     options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
     settings.JsonSerializer = new DefaultJsonSerializer(options);
 });
@@ -27,6 +28,7 @@ builder.Services.AddMudServices();
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.SerializerOptions.Converters.Add(new LocationJsonConverter());
     options.SerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
 });
 

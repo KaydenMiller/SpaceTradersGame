@@ -2,9 +2,7 @@
 @inject PlayerApiService PlayerApiService
 
 
-<MudPaper Class="pa-16 ma-2" Elevation="3">
-    <h3>Player</h3>
-
+<MudPaper Elevation="3">
     @if (PlayerDetails == null)
     {
         <p>
@@ -13,8 +11,7 @@
     }
     else
     {
-        // default tables look weired in mud theme
-        <table class="table">
+        <MudSimpleTable class="table">
             <thead>
             <tr>
                 <th>Symbol</th>
@@ -31,17 +28,14 @@
                 <td>@PlayerDetails.StartingFaction</td>
             </tr>
             </tbody>
-        </table>
+        </MudSimpleTable>
     }
 </MudPaper>
 
 
 @code {
-    private Player? PlayerDetails { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        PlayerDetails = await PlayerApiService.GetPlayer();
-    }
+    [Parameter]
+    public Player? PlayerDetails { get; set; }
 
 }

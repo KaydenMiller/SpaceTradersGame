@@ -14,5 +14,6 @@ public class ShipCooldown
     public int RemainingSeconds { get; set; }
 
     [JsonPropertyName("expiration")]
-    public DateTime Expiration { get; set; }
+    public DateTime? Expiration { get; set; }
+    
 }

@@ -8,7 +8,7 @@ public class ShipYard
 {
     [JsonPropertyName("symbol")]
     [JsonConverter(typeof(LocationJsonConverter))]
-    public Location.Location Symbol { get; set; }
+    public Core.Location Symbol { get; set; }
 
     [JsonPropertyName("shipTypes")]
     public IEnumerable<ShipType> Ships { get; set; }

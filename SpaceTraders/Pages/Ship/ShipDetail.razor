@@ -1,0 +1,83 @@
+﻿@page "/ship-detail/{ShipSymbol}"
+@using SpaceTraders.Core
+@using SpaceTraders.Pages.Location
+@using System.Globalization
+@inject ShipApiService ShipApiService
+@inject LocationApiService LocationApiService
+
+<MudPaper Elevation="3" Class="ma-2 pa-5">
+    <MudText Typo="Typo.h5">@ShipSymbol</MudText>
+    @if (CurrentShip is not null)
+    {
+        <MudText Typo="Typo.body2">@CurrentShip.Registration.Name</MudText>
+    }
+</MudPaper>
+
+<MudDivider/>
+
+<MudPaper Elevation="3" Class="ma-2 pa-10">
+    @if (CurrentShip is null)
+    {
+        <MudText Typo="Typo.h1">Loading...</MudText>
+    }
+    else
+    {
+        <MudText Typo="Typo.body1">Current System: @CurrentShip.NavigationInfo.SystemSymbol</MudText>
+        <MudText Typo="Typo.body1">Current Waypoint: @CurrentShip.NavigationInfo.WaypointSymbol</MudText>
+        <MudText Typo="Typo.body1">
+            <MudList Dense>
+                <MudListItem>Ship Cooldown: @(ShipCooldown?.Expiration?.ToString(CultureInfo.InvariantCulture) ?? "None")</MudListItem>
+                @if (ShipCooldown is not null)
+                {
+                    <MudListItem>Cooldown Time Remaining: @(ShipCooldown.RemainingSeconds.ToString())</MudListItem>
+                }
+                <MudListItem>Ship Status: @(CurrentShip.NavigationInfo.Status.ToString())</MudListItem>
+                <MudListItem>Ship Flight Mode: @(CurrentShip.NavigationInfo.FlightMode.ToString())</MudListItem>
+                <MudListItem>Frame: @CurrentShip.Frame.Name</MudListItem>
+                <MudListItem>Description: @CurrentShip.Frame.Description</MudListItem>
+                <MudListItem>Condition: @CurrentShip.Frame.Condition</MudListItem>
+                <MudListItem>Module Slots: @CurrentShip.Frame.ModuleSlots</MudListItem>
+                <MudListItem>Mounting Points: @CurrentShip.Frame.MountingPoints</MudListItem>
+                <MudListItem>Fuel Capacity: @CurrentShip.Frame.FuelCapacity</MudListItem>
+                <MudListItem>Fuel Total: @CurrentShip.Fuel.Current</MudListItem>
+                <MudListItem>Inventory Capacity: @CurrentShip.Cargo.Capacity</MudListItem>
+                <MudListItem>Inventory Stored: @CurrentShip.Cargo.TotalUnits</MudListItem>
+            </MudList>
+        </MudText>
+       
+        <MudText Typo="Typo.h4">Inventory</MudText>
+        <MudDataGrid Items="@CurrentShip.Cargo.InventoryItems">
+            <Columns>
+                <PropertyColumn T="InventoryItem" TProperty="string" Property="i => i.Name"/>
+                <PropertyColumn T="InventoryItem" TProperty="string" Property="i => i.Quantity.ToString()" Title="Quantity"/>
+            </Columns>
+        </MudDataGrid>
+    }
+</MudPaper>
+
+<MudText Typo="Typo.h3">Helm</MudText>
+<ShipHelm ActiveShip="CurrentShip"
+          NearbyLocations="NearbyLocations"></ShipHelm>
+
+@code {
+
+    [Parameter]
+    public string ShipSymbol { get; set; } = default!;
+
+    private Ship? CurrentShip { get; set; }
+    private ShipCooldown? ShipCooldown { get; set; }
+    private IEnumerable<LocationInfo> NearbyLocations { get; set; }= Enumerable.Empty<LocationInfo>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateCurrentShipInfo();
+    }
+
+    private async Task UpdateCurrentShipInfo()
+    {
+        CurrentShip = await ShipApiService.GetShipDetail(ShipSymbol);
+        ShipCooldown = await ShipApiService.GetShipCooldown(CurrentShip);
+        NearbyLocations = await LocationApiService.GetSystemInfo(CurrentShip.NavigationInfo.WaypointSymbol);
+    }
+
+}

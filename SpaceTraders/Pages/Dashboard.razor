@@ -1,0 +1,24 @@
+﻿@page "/dashboard"
+@using SpaceTraders.Pages.Ship
+@using SpaceTraders.Pages.Player
+@inject ShipApiService ShipApiService
+@inject PlayerApiService PlayerApiService
+
+<MudPaper Elevation="3" Class="pa-16 ma-2">
+    <MudText Typo="Typo.h3">Player</MudText>
+    <PlayerDetail PlayerDetails="@PlayerDetails"></PlayerDetail>
+    
+    <MudText Typo="Typo.h3">Owned Ships</MudText>
+    <Ships OwnedShips="OwnedShips"></Ships>
+</MudPaper>
+
+
+@code {
+    private IEnumerable<Core.Ship> OwnedShips { get; set; } = Enumerable.Empty<Core.Ship>();
+    private Player.Player? PlayerDetails { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        OwnedShips = await ShipApiService.GetOwnedShips();
+        PlayerDetails = await PlayerApiService.GetPlayer();
+    }
+}

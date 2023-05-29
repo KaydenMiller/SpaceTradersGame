@@ -9,7 +9,7 @@ public class Transaction
     public ShipTypes ShipSymbol { get; set; }
 
     [JsonPropertyName("waypointSymbol")]
-    public Location.Location WaypointsSymbol { get; set; }
+    public Core.Location WaypointsSymbol { get; set; }
 
     [JsonPropertyName("agentSymbol")]
     public string AgentSymbol { get; set; }

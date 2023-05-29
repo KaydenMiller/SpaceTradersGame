@@ -13,7 +13,30 @@ public class ShipApiService
         _api = api;
     }
 
-    public async Task<NavigateShipResponse> Navigate(Core.Ship ship, Location.Location waypoint)
+    public async Task<Core.Ship> GetShipDetail(string shipSymbol)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("ships")
+           .AppendPathSegment(shipSymbol)
+           .WithOAuthBearerToken(_api.ApiToken)
+           .GetJsonAsync<SpaceTradersObjectResponse<Core.Ship>>();
+
+        return response.Data;
+    }
+
+    public async Task<IEnumerable<Core.Ship>> GetOwnedShips()
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("ships")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .GetJsonAsync<SpaceTradersArrayResponse<Core.Ship>>();
+
+        return response.Data; 
+    }
+
+    public async Task<NavigateShipResponse> Navigate(Core.Ship ship, Core.Location waypoint)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -50,9 +73,11 @@ public class ShipApiService
            .AppendPathSegment(ship.Id)
            .AppendPathSegment("orbit")
            .WithOAuthBearerToken(_api.ApiToken)
-           .GetJsonAsync<SpaceTradersObjectResponse<NavigationInfo>>();
+           .PostAsync();
+            
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<NavigationInfo>>();
 
-        return response.Data;
+        return result.Data;
     }
 
     public async Task<NavigationInfo> DockCurrent(Core.Ship ship)
@@ -63,9 +88,11 @@ public class ShipApiService
            .AppendPathSegment(ship.Id)
            .AppendPathSegment("dock")
            .WithOAuthBearerToken(_api.ApiToken)
-           .GetJsonAsync<SpaceTradersObjectResponse<NavigationInfo>>();
+           .PostAsync();
+            
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<NavigationInfo>>();
 
-        return response.Data; 
+        return result.Data;
     }
 
     public async Task<RefuelShipResponse> Refuel(Core.Ship ship)
@@ -76,12 +103,14 @@ public class ShipApiService
            .AppendPathSegment(ship.Id)
            .AppendPathSegment("refuel")
            .WithOAuthBearerToken(_api.ApiToken)
-           .GetJsonAsync<SpaceTradersObjectResponse<RefuelShipResponse>>();
+           .PostAsync();
 
-        return response.Data;  
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<RefuelShipResponse>>();
+
+        return result.Data;  
     }
 
-    public async Task<ShipCooldown> GetShipCooldown(Core.Ship ship)
+    public async Task<ShipCooldown?> GetShipCooldown(Core.Ship ship)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -89,12 +118,12 @@ public class ShipApiService
            .AppendPathSegment(ship.Id)
            .AppendPathSegment("cooldown")
            .WithOAuthBearerToken(_api.ApiToken)
-           .GetJsonAsync<SpaceTradersObjectResponse<ShipCooldown>>();
+           .GetJsonAsync<SpaceTradersObjectResponse<ShipCooldown>?>();
 
-        return response.Data;
+        return response?.Data;
     }
 
-    public async Task<WarpShipResponse> Warp(Core.Ship ship, Location.Location waypoint)
+    public async Task<WarpShipResponse> Warp(Core.Ship ship, Core.Location waypoint)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -112,18 +141,27 @@ public class ShipApiService
         return result.Data;
     }
 
-    public async Task<ExtractionResponse> ExtractOre(Core.Ship ship, Survey survey)
+    public async Task<ExtractionResponse> ExtractOre(Core.Ship ship, Survey? survey = null)
     {
-        var response = await SpaceTradersApi.API_ROOT
+        var request = SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
            .AppendPathSegment("ships")
            .AppendPathSegment(ship.Id)
            .AppendPathSegment("extract")
-           .WithOAuthBearerToken(_api.ApiToken)
-           .PostJsonAsync(survey);
+           .WithOAuthBearerToken(_api.ApiToken);
+
+        IFlurlResponse response; 
+
+        if (survey is not null)
+        {
+            response = await request.PostJsonAsync(survey);
+        }
+        else
+        {
+            response = await request.PostAsync();
+        }
             
         var result = await response.GetJsonAsync<SpaceTradersObjectResponse<ExtractionResponse>>();
-
         return result.Data;
     }
 

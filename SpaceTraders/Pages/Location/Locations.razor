@@ -10,7 +10,7 @@
         <MudSpacer/>
     </ToolBarContent>
     <Columns>
-        <PropertyColumn T="LocationInfo" TProperty="string" Property="info => info.Symbol"/>
+        <PropertyColumn T="LocationInfo" TProperty="string" Property="info => info.Symbol.ToString()"/>
         @* <PropertyColumn T="LocationInfo" TProperty="bool" Property="info => HasShipYard(info)" Title="Ship Yard" /> *@
         <TemplateColumn Title="Ship Yard" T="LocationInfo">
             <CellTemplate>
@@ -29,12 +29,12 @@
 
 @code {
     private IEnumerable<LocationInfo>? LocationInfos { get; set; }
-    private Location Location { get; set; }
+    private Core.Location Location { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var playerInfo = await PlayerApiService.GetPlayer();
-        Location = Location.CreateFromWaypoint(playerInfo.Headquarters);
+        Location = Core.Location.CreateFromWaypoint(playerInfo.Headquarters);
         LocationInfos = await LocationApiService.GetSystemInfo(Location);
     }
 

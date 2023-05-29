@@ -12,7 +12,7 @@ public class LocationApiService
         _api = api;
     }
 
-    public async Task<LocationInfo> GetLocationInfo(Location location)
+    public async Task<LocationInfo> GetLocationInfo(Core.Location location)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegments("systems", location.System, "waypoints", location.Waypoint)
@@ -22,7 +22,7 @@ public class LocationApiService
         return response.Data;
     }
 
-    public async Task<IEnumerable<LocationInfo>> GetSystemInfo(Location location)
+    public async Task<IEnumerable<LocationInfo>> GetSystemInfo(Core.Location location)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegments("systems", location.System, "waypoints")

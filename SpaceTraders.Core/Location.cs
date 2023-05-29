@@ -1,4 +1,4 @@
-﻿namespace SpaceTraders.Pages.Location;
+﻿namespace SpaceTraders.Core;
 
 public struct Location
 {

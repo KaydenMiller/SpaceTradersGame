@@ -9,7 +9,7 @@ public class LocationInfo
     public string SystemSymbol { get; set; }
 
     [JsonPropertyName("symbol")]
-    public string Symbol { get; set; }
+    public Core.Location Symbol { get; set; }
 
     [JsonPropertyName("type")]
     public WaypointType Type { get; set; }
@@ -35,11 +35,11 @@ public class LocationInfo
 
 public class Orbital
 {
-    private Location _symbol;
+    private Core.Location _symbol;
 
     [JsonPropertyName("symbol")]
     [JsonConverter(typeof(LocationJsonConverter))]
-    public Location Symbol { get; set; }
+    public Core.Location Symbol { get; set; }
 }
 
 public class Trait

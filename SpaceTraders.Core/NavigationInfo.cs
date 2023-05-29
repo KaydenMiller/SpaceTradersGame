@@ -8,10 +8,16 @@ public class NavigationInfo
     public string SystemSymbol { get; set; }
 
     [JsonPropertyName("waypointSymbol")]
-    public string WaypointSymbol { get; set; }
+    public Location WaypointSymbol { get; set; }
 
     [JsonPropertyName("route")]
     public NavigationRoute Route { get; set; }
+
+    [JsonPropertyName("status")]
+    public ShipStatus Status { get; set; }
+
+    [JsonPropertyName("flightMode")]
+    public ShipFlightMode FlightMode { get; set; }
 
     public class NavigationRoute
     {
