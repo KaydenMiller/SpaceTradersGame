@@ -2,7 +2,7 @@
 
 namespace SpaceTraders.Core;
 
-public class ShipMount
+public class ShipEngine
 {
     [JsonPropertyName("symbol")]
     public string Id { get; set; }
@@ -13,11 +13,11 @@ public class ShipMount
     [JsonPropertyName("description")]
     public string Description { get; set; }
 
-    [JsonPropertyName("strength")]
-    public int Strength { get; set; }
+    [JsonPropertyName("condition")]
+    public int Condition { get; set; }
 
-    [JsonPropertyName("deposits")]
-    public OreDeposits ValidOreDeposits { get; set; }
+    [JsonPropertyName("speed")]
+    public int Speed { get; set; }
 
     [JsonPropertyName("requirements")]
     public Requirements Requirements { get; set; }

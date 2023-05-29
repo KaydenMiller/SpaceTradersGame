@@ -8,12 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="Pages\Contracts\Contracts.razor"/>
+        <AdditionalFiles Include="Pages\Contracts\Contracts.razor" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Flurl.Http" Version="4.0.0-pre3"/>
-        <PackageReference Include="MudBlazor" Version="6.3.0"/>
+        <PackageReference Include="Flurl.Http" Version="4.0.0-pre3" />
+        <PackageReference Include="MudBlazor" Version="6.3.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SpaceTraders.Core\SpaceTraders.Core.csproj"/>
+        <ProjectReference Include="..\SpaceTraders.Core\SpaceTraders.Core.csproj" />
     </ItemGroup>
 
 </Project>
