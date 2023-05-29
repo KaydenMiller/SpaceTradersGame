@@ -18,7 +18,7 @@
             </CellTemplate>
         </TemplateColumn>
         <PropertyColumn T="LocationInfo" TProperty="bool" Property="info => HasMarketPlace(info)" Title="Market Place"/>
-        <PropertyColumn T="LocationInfo" TProperty="string" Property="info => info.Type"/>
+        <PropertyColumn T="LocationInfo" TProperty="string" Property="info => info.Type.ToString()" Title="Type"/>
         <PropertyColumn T="LocationInfo" TProperty="string" Property="info => BuildCords(info)" Title="Cords" Filterable="false" Sortable="false"/>
     </Columns>
     <PagerContent>
