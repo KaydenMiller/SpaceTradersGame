@@ -5,7 +5,7 @@
 <MudPaper Class="pa-16 ma-2" Elevation="3">
     <h3>Player</h3>
 
-    @if (@PlayerDetails == null)
+    @if (PlayerDetails == null)
     {
         <p>
             <em>Loading...</em>
@@ -41,6 +41,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        this.PlayerDetails = await PlayerApiService.GetPlayer();
+        PlayerDetails = await PlayerApiService.GetPlayer();
     }
+
 }

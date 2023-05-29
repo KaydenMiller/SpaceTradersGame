@@ -5,16 +5,16 @@ namespace SpaceTraders.Pages.Contracts;
 
 public class ContractApiService
 {
-    private string _token;
+    private readonly string _token;
 
     public ContractApiService(IConfiguration configuration)
     {
         _token = configuration["SpaceTraders:ApiKey"]!;
     }
-    
+
     public async Task<IEnumerable<Contract>> GetContracts()
     {
-        var response = await SpaceTradersApi.API_ROOT 
+        var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
            .AppendPathSegment("contracts")
            .WithOAuthBearerToken(_token)
@@ -25,7 +25,7 @@ public class ContractApiService
 
     public async Task<AcceptContractResponse> AcceptContract(string contractId)
     {
-        var response = await SpaceTradersApi.API_ROOT 
+        var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
            .AppendPathSegment("contracts")
            .AppendPathSegment(contractId)

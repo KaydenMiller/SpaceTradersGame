@@ -11,15 +11,15 @@ public class PlayerApiService
     {
         _api = api;
     }
-    
+
     public async Task<Player> GetPlayer()
     {
-        var response = await SpaceTradersApi.API_ROOT 
-            .AppendPathSegment("my")
-            .AppendPathSegment("agent")
-            .WithOAuthBearerToken(_api.ApiToken)
-            .GetJsonAsync<SpaceTradersObjectResponse<Player>>();
-        
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("agent")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .GetJsonAsync<SpaceTradersObjectResponse<Player>>();
+
         return response.Data;
     }
 }

@@ -2,32 +2,31 @@
 
 public struct Location
 {
-    private readonly string _sector;
     private readonly string? _system;
     private readonly string? _waypoint;
 
-    public readonly string Sector => _sector;
+    public string Sector { get; }
 
-    public readonly string? System => $"{_sector}-{_system}";
+    public readonly string? System => $"{Sector}-{_system}";
 
-    public readonly string? Waypoint => $"{_sector}-{_system}-{_waypoint}";
+    public readonly string? Waypoint => $"{Sector}-{_system}-{_waypoint}";
 
     public Location(string sector)
     {
-        this._sector = sector;
+        Sector = sector;
     }
 
     public Location(string sector, string system)
     {
-        this._sector = sector;
-        this._system = system;
+        Sector = sector;
+        _system = system;
     }
 
     public Location(string sector, string system, string waypoint)
     {
-        this._sector = sector;
-        this._system = system;
-        this._waypoint = waypoint;
+        Sector = sector;
+        _system = system;
+        _waypoint = waypoint;
     }
 
     public static Location CreateFromWaypoint(string waypoint)
@@ -42,7 +41,8 @@ public struct Location
         if (Waypoint is not null)
         {
             return Waypoint;
-        } 
+        }
+
         if (System is not null)
         {
             return System;

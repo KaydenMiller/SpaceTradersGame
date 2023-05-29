@@ -2,12 +2,12 @@
 @using SpaceTraders.Pages.Location
 @inject ShipYardApiService ShipYardApiService;
 
-@if (@Waypoint is not null)
+@if (Waypoint is not null)
 {
     <MudDataGrid T="ShipType" Items="@Ships" SortMode="SortMode.Multiple" Filterable="true">
         <ToolBarContent>
             <MudText Typo="Typo.h6">ShipYard: @ShipYardDetails.Symbol.ToString()</MudText>
-            <MudSpacer />
+            <MudSpacer/>
         </ToolBarContent>
         <Columns>
             <PropertyColumn T="ShipType" TProperty="string" Property="ship => ship.Type.ToString()" Title="Ship Types"/>
@@ -23,16 +23,17 @@ else
 
     [Parameter]
     public string? Waypoint { get; set; }
+
     private ShipYard? ShipYardDetails { get; set; }
     private IEnumerable<ShipType>? Ships { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (this.Waypoint is not null)
+        if (Waypoint is not null)
         {
-            var location = Location.CreateFromWaypoint(this.Waypoint);
-            this.ShipYardDetails = await ShipYardApiService.GetShipYard(location);
-            this.Ships = this.ShipYardDetails.Ships;
+            var location = Location.CreateFromWaypoint(Waypoint);
+            ShipYardDetails = await ShipYardApiService.GetShipYard(location);
+            Ships = ShipYardDetails.Ships;
         }
     }
 

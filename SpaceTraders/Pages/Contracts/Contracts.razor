@@ -4,25 +4,25 @@
 <MudPaper Class="pa-16 ma-2" Elevation="3">
     <h3>Contracts</h3>
 
-@if (_contracts is not null)
-{
-    <MudGrid Spacing="10" Justify="Justify.Center">
-        <MudItem xs="3">
-            <MudPaper Elevation="2">
-                @foreach (var contract in _contracts)
-                {
-                    <ContractCard Contract="contract"></ContractCard>
-                }
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-}
-else
-{
-    <div>
-        Loading...
-    </div>
-}
+    @if (_contracts is not null)
+    {
+        <MudGrid Spacing="10" Justify="Justify.Center">
+            <MudItem xs="3">
+                <MudPaper Elevation="2">
+                    @foreach (var contract in _contracts)
+                    {
+                        <ContractCard Contract="contract"></ContractCard>
+                    }
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    }
+    else
+    {
+        <div>
+            Loading...
+        </div>
+    }
 
 </MudPaper>
 
@@ -44,4 +44,5 @@ else
     {
         _contracts = await ContractApiService.GetContracts();
     }
+
 }

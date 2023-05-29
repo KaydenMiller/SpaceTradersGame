@@ -14,20 +14,20 @@ public class ShipYardApiService
 
     public async Task<ShipYard> GetShipYard(Location.Location location)
     {
-        var response = await SpaceTradersApi.API_ROOT 
-            .AppendPathSegments("systems", location.System, "waypoints", location.Waypoint, "shipyard")
-            .WithOAuthBearerToken(_api.ApiToken)
-            .GetJsonAsync<SpaceTradersObjectResponse<ShipYard>>();
-        
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegments("systems", location.System, "waypoints", location.Waypoint, "shipyard")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .GetJsonAsync<SpaceTradersObjectResponse<ShipYard>>();
+
         return response.Data;
     }
-    
+
     public async Task<ShipYard> TestCall()
     {
-        var response = await SpaceTradersApi.API_ROOT 
-            .AppendPathSegments("systems", "X1-VS75", "waypoints", "X1-VS75-97637F", "shipyard")
-            .WithOAuthBearerToken(_api.ApiToken)
-            .GetJsonAsync<SpaceTradersObjectResponse<ShipYard>>();
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegments("systems", "X1-VS75", "waypoints", "X1-VS75-97637F", "shipyard")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .GetJsonAsync<SpaceTradersObjectResponse<ShipYard>>();
 
         return response.Data;
     }

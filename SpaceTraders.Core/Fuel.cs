@@ -12,7 +12,7 @@ public class Fuel
 
     [JsonPropertyName("consumed")]
     public FuelConsumed? Consumed { get; set; }
-    
+
     public class FuelConsumed
     {
         [JsonPropertyName("amount")]

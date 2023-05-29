@@ -7,7 +7,7 @@ public class Contract
     [JsonPropertyName("id")]
     public string Id { get; set; } = default!;
 
-    [JsonPropertyName("factionSymbol")] 
+    [JsonPropertyName("factionSymbol")]
     public string FactionSymbol { get; set; } = default!;
 
     [JsonPropertyName("type")]
@@ -37,9 +37,9 @@ public class Contract
         [JsonPropertyName("payment")]
         public ContractPayment Payment { get; set; } = default!;
 
-        [JsonPropertyName("deliver")] 
-        public IEnumerable<Delivery>? Deliveries { get; set; } 
-        
+        [JsonPropertyName("deliver")]
+        public IEnumerable<Delivery>? Deliveries { get; set; }
+
         public class ContractPayment
         {
             [JsonPropertyName("onAccepted")]

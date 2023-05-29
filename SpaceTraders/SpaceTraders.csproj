@@ -5,25 +5,25 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>ac81a1cd-43d2-4b72-b8fe-48b7e7c7005c</UserSecretsId>
-  </PropertyGroup>
+    </PropertyGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Pages\Contracts\Contracts.razor" />
+        <AdditionalFiles Include="Pages\Contracts\Contracts.razor"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Flurl.Http" Version="4.0.0-pre3" />
-      <PackageReference Include="MudBlazor" Version="6.3.0" />
+        <PackageReference Include="Flurl.Http" Version="4.0.0-pre3"/>
+        <PackageReference Include="MudBlazor" Version="6.3.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Update="appsettings.Development.json">
-        <DependentUpon>appsettings.json</DependentUpon>
-      </Content>
+        <Content Update="appsettings.Development.json">
+            <DependentUpon>appsettings.json</DependentUpon>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SpaceTraders.Core\SpaceTraders.Core.csproj" />
+        <ProjectReference Include="..\SpaceTraders.Core\SpaceTraders.Core.csproj"/>
     </ItemGroup>
 
 </Project>
