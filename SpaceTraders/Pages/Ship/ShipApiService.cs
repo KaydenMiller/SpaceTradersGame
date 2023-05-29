@@ -55,6 +55,32 @@ public class ShipApiService
         return response.Data;
     }
 
+    public async Task<NavigationInfo> DockCurrent(Core.Ship ship)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("ships")
+           .AppendPathSegment(ship.Id)
+           .AppendPathSegment("dock")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .GetJsonAsync<SpaceTradersObjectResponse<NavigationInfo>>();
+
+        return response.Data; 
+    }
+
+    public async Task<RefuelShipResponse> Refuel(Core.Ship ship)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("ships")
+           .AppendPathSegment(ship.Id)
+           .AppendPathSegment("refuel")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .GetJsonAsync<SpaceTradersObjectResponse<RefuelShipResponse>>();
+
+        return response.Data;  
+    }
+
     public async Task<ShipCooldown> GetShipCooldown(Core.Ship ship)
     {
         var response = await SpaceTradersApi.API_ROOT
