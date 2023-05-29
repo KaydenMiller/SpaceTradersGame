@@ -16,6 +16,7 @@ FlurlHttp.Configure(settings =>
 {
     var options = new JsonSerializerOptions(JsonSerializerOptions.Default);
     options.Converters.Add(new JsonStringEnumConverter());
+    options.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
     settings.JsonSerializer = new DefaultJsonSerializer(options);
 });
 
@@ -26,6 +27,7 @@ builder.Services.AddMudServices();
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.SerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
 });
 
 builder.Services.AddSingleton<SpaceTradersApi>();
