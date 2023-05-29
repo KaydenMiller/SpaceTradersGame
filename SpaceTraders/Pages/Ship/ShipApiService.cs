@@ -93,4 +93,52 @@ public class ShipApiService
 
         return response.Data;
     }
+
+    public async Task<WarpShipResponse> Warp(Core.Ship ship, Location.Location waypoint)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("ships")
+           .AppendPathSegment(ship.Id)
+           .AppendPathSegment("warp")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .PostJsonAsync(new
+            {
+                waypointSymbol = waypoint.ToString()
+            });
+            
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<WarpShipResponse>>();
+
+        return result.Data;
+    }
+
+    public async Task<ExtractionResponse> ExtractOre(Core.Ship ship, Survey survey)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("ships")
+           .AppendPathSegment(ship.Id)
+           .AppendPathSegment("extract")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .PostJsonAsync(survey);
+            
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<ExtractionResponse>>();
+
+        return result.Data;
+    }
+
+    public async Task<SurveyResponse> Survey(Core.Ship ship)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("ships")
+           .AppendPathSegment(ship.Id)
+           .AppendPathSegment("survey")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .PostAsync();
+            
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<SurveyResponse>>();
+
+        return result.Data; 
+    }
 }
