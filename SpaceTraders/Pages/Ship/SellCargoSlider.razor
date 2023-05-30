@@ -2,11 +2,13 @@
 @inject ShipApiService ShipApiService
 
 <MudStack Row>
-    <MudSlider @ref="QuantitySlider" Min="1" Max="Item.Quantity"/>
-    <MudText Typo="Typo.body2">@QuantitySlider.Value</MudText>
+    <MudSlider Min="1"
+               Max="Item.Quantity"
+               ValueLabel="true"
+               @bind-Value="_quantityToSell">Quantity: @_quantityToSell</MudSlider>
     <MudButton Color="Color.Warning"
                Variant="Variant.Filled"
-               OnClick="@(() => SellInventoryItem(Item.Id, QuantitySlider?.Value ?? 0))">Sell</MudButton>
+               OnClick="@(() => SellInventoryItem(Item.Id, _quantityToSell))">Sell</MudButton>
 </MudStack>
 
 @code {
@@ -17,8 +19,8 @@
     [Parameter]
     public InventoryItem Item { get; set; } = default!;
 
-    public MudSlider<int>? QuantitySlider { get; set; }
-    
+    private int _quantityToSell = 1;
+
     private async Task SellInventoryItem(string itemId, int quantityToSell)
     {
         if (ActiveShip is null) throw new NullReferenceException("CurrentShip cannot be null in order to sell");
