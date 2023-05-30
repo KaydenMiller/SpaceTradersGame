@@ -10,6 +10,8 @@
         <Columns>
             <PropertyColumn T="LocationInfo" TProperty="string" Property="l => l.Symbol.ToString()"/>
             <PropertyColumn T="LocationInfo" TProperty="string" Property="l => l.Type.ToString()"/>
+            <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => HasShipYard(l)" Title="Ship Yard" />
+            <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => HasMarketPlace(l)" Title="Market Place" />
             <TemplateColumn T="LocationInfo">
                 <CellTemplate>
                     <MudStack Row>
@@ -67,4 +69,15 @@
     {
         var response = await ShipApiService.ExtractOre(ActiveShip);
     }
+    
+    private bool HasShipYard(LocationInfo locationInfo)
+    {
+        return locationInfo.Traits.Any(x => x.Symbol == "SHIPYARD");
+    }
+
+    private bool HasMarketPlace(LocationInfo locationInfo)
+    {
+        return locationInfo.Traits.Any(x => x.Symbol == "MARKETPLACE");
+    }
+
 }
