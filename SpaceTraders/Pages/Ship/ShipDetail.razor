@@ -50,6 +50,16 @@
             <Columns>
                 <PropertyColumn T="InventoryItem" TProperty="string" Property="i => i.Name"/>
                 <PropertyColumn T="InventoryItem" TProperty="string" Property="i => i.Quantity.ToString()" Title="Quantity"/>
+                <TemplateColumn T="InventoryItem">
+                    <CellTemplate>
+                        <MudStack Row>
+                            <MudSlider Min="1" Max="context.Item.Quantity"/>
+                            <MudButton Color="Color.Warning"
+                                       Variant="Variant.Filled"
+                                       OnClick="@(() => SellInventoryItem(context.Item.Id, context.Item.Quantity))">Sell</MudButton>
+                        </MudStack>
+                    </CellTemplate>
+                </TemplateColumn>
             </Columns>
         </MudDataGrid>
     }
@@ -78,6 +88,13 @@
         CurrentShip = await ShipApiService.GetShipDetail(ShipSymbol);
         ShipCooldown = await ShipApiService.GetShipCooldown(CurrentShip);
         NearbyLocations = await LocationApiService.GetSystemInfo(CurrentShip.NavigationInfo.WaypointSymbol);
+    }
+
+    private async Task SellInventoryItem(string itemId, int quantityToSell)
+    {
+        if (CurrentShip is null) throw new NullReferenceException("CurrentShip cannot be null in order to sell");
+        
+        _ = await ShipApiService.SellCargo(CurrentShip, itemId, quantityToSell);
     }
 
 }

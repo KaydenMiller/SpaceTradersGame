@@ -165,6 +165,25 @@ public class ShipApiService
         return result.Data;
     }
 
+    public async Task<SellCargoResponse> SellCargo(Core.Ship ship, string cargoSymbol, int unitsToSell)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("ships")
+           .AppendPathSegment(ship.Id)
+           .AppendPathSegment("sell")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .PostJsonAsync(new
+            {
+                symbol = cargoSymbol,
+                units = unitsToSell
+            });
+            
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<SellCargoResponse>>();
+
+        return result.Data;
+    }
+
     public async Task<SurveyResponse> Survey(Core.Ship ship)
     {
         var response = await SpaceTradersApi.API_ROOT
