@@ -12,6 +12,7 @@
             <PropertyColumn T="LocationInfo" TProperty="string" Property="l => l.Type.ToString()"/>
             <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => HasShipYard(l)" Title="Ship Yard" />
             <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => HasMarketPlace(l)" Title="Market Place" />
+            <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => ShipHere(l)" Title="Ship Here"></PropertyColumn>
             <TemplateColumn T="LocationInfo">
                 <CellTemplate>
                     <MudStack Row>
@@ -49,7 +50,7 @@
     {
         var response = await ShipApiService.Navigate(ActiveShip, waypoint);
     }
-    
+
     private async Task Dock()
     {
         var response = await ShipApiService.DockCurrent(ActiveShip);
@@ -78,6 +79,11 @@
     private bool HasMarketPlace(LocationInfo locationInfo)
     {
         return locationInfo.Traits.Any(x => x.Symbol == "MARKETPLACE");
+    }
+    
+    private bool ShipHere(LocationInfo location)
+    {
+        return this.ActiveShip.NavigationInfo.WaypointSymbol.ToString() == location.Symbol.ToString();
     }
 
 }
