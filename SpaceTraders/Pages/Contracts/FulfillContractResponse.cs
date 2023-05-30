@@ -3,9 +3,9 @@ using SpaceTraders.Core;
 
 namespace SpaceTraders.Pages.Contracts;
 
-public class AcceptContractResponse
+public class FulfillContractResponse
 {
-    [JsonPropertyName("agent")]
+    [JsonPropertyName("player")]
     public Player.Player Player { get; set; }
 
     [JsonPropertyName("contract")]

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SpaceTraders.Pages.Contracts;
+namespace SpaceTraders.Core;
 
 public class Contract
 {

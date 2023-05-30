@@ -3,11 +3,11 @@ using SpaceTraders.Core;
 
 namespace SpaceTraders.Pages.Contracts;
 
-public class AcceptContractResponse
+public class DeliverContractResponse
 {
-    [JsonPropertyName("agent")]
-    public Player.Player Player { get; set; }
-
     [JsonPropertyName("contract")]
     public Contract Contract { get; set; }
+
+    [JsonPropertyName("cargo")]
+    public Cargo Cargo { get; set; }
 }

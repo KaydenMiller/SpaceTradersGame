@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using Flurl.Http;
+using SpaceTraders.Core;
 
 namespace SpaceTraders.Pages.Contracts;
 
@@ -36,5 +37,39 @@ public class ContractApiService
         var result = await response.GetJsonAsync<SpaceTradersObjectResponse<AcceptContractResponse>>();
 
         return result.Data;
+    }
+
+
+    public async Task<DeliverContractResponse> DeliverCargoForContract(string contractId, Core.Ship shipToDeliverFrom, string cargoItemId, int quantityToDeliver)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("contracts")
+           .AppendPathSegment(contractId)
+           .AppendPathSegment("deliver")
+           .PostJsonAsync(new
+            {
+                shipSymbol = shipToDeliverFrom.Id,
+                tradeSymbol = cargoItemId,
+                units = quantityToDeliver
+            });
+
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<DeliverContractResponse>>();
+
+        return result.Data;
+    }
+
+    public async Task<FulfillContractResponse> FulfillContract(string contractId)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("contracts")
+           .AppendPathSegment(contractId)
+           .AppendPathSegment("fulfill")
+           .PostAsync();
+        
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<FulfillContractResponse>>();
+
+        return result.Data; 
     }
 }
