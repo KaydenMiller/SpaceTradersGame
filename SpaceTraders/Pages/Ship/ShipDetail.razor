@@ -2,8 +2,10 @@
 @using SpaceTraders.Core
 @using SpaceTraders.Pages.Location
 @using System.Globalization
+@using SpaceTraders.Pages.ShipScripts
 @inject ShipApiService ShipApiService
 @inject LocationApiService LocationApiService
+@inject ILogger<MineAndSell> MiningLogger
 
 <MudPaper Elevation="3" Class="ma-2 pa-5">
     <MudText Typo="Typo.h5">@ShipSymbol</MudText>
@@ -22,6 +24,12 @@
     }
     else
     {
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="@(RunMiningScript)">
+            Run Mining Script
+        </MudButton>
+        
         <MudText Typo="Typo.body1">Current System: @CurrentShip.NavigationInfo.SystemSymbol</MudText>
         <MudText Typo="Typo.body1">Current Waypoint: @CurrentShip.NavigationInfo.WaypointSymbol</MudText>
         <MudText Typo="Typo.body1">
@@ -85,6 +93,12 @@
         NearbyLocations = await LocationApiService.GetSystemInfo(CurrentShip.NavigationInfo.WaypointSymbol);
     }
 
-
+    private async Task RunMiningScript()
+    {
+        if (CurrentShip is null) throw new NullReferenceException("Current Ship cannot be null inorder to mine");
+        
+        var miningScript = new MineAndSell(ShipApiService, MiningLogger);
+        await miningScript.Run(CurrentShip);
+    }
 
 }
