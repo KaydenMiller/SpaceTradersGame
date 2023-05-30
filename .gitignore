@@ -1,4 +1,6 @@
-﻿# Common IntelliJ Platform excludes
+﻿.local/http-client.env.json
+
+# Common IntelliJ Platform excludes
 
 # User specific
 **/.idea/**/workspace.xml

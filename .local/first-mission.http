@@ -1,3 +1,9 @@
 ﻿// Get Contracts
-GET https://api.spacetraders.io/v2/my/contracts
-Authorization: Bearer 
+POST https://api.spacetraders.io/v2/my/ships/DEATH2142ZERG-2/extract
+Authorization: Bearer {{apikey}}
+Content-Type: application/json
+
+###
+POST https://api.spacetraders.io/v2/my/ships/DEATH2142ZERG-1/survey
+Authorization: Bearer {{apikey}} 
+Content-Type: application/json
