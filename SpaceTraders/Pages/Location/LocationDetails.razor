@@ -1,0 +1,39 @@
+﻿@page "/location-details/{SystemSymbol}"
+@using SpaceTraders.Core
+@using SpaceTraders.Pages.Ship
+@using System.Globalization
+@inject ShipApiService ShipApiService
+
+<MudPaper Elevation="3" Class="ma-2 pa-10">
+   <MudDataGrid T="Survey" Items="Surveys">
+      <Columns>
+         <PropertyColumn T="Survey" TProperty="string" Property="s => s.Signature"/>
+         <PropertyColumn T="Survey" TProperty="string" Property="s => s.Symbol"/>
+         <PropertyColumn T="Survey" TProperty="string" Property="s => s.Expiration.ToString(CultureInfo.InvariantCulture)"/>
+         <PropertyColumn T="Survey" TProperty="string" Property="s => s.Size"/>
+         <PropertyColumn T="Survey" TProperty="string" Property="s => JoinOres(s.OreDeposits)"/>
+      </Columns>
+   </MudDataGrid>
+</MudPaper>
+
+@code {
+
+   [Parameter]
+   public string SystemSymbol { get; set; } = default!;
+
+   public IEnumerable<Survey> Surveys { get; set; } = Enumerable.Empty<Survey>();
+
+   protected override Task OnInitializedAsync()
+   {
+      Surveys = ShipApiService.Surveys.Where(s => s.Symbol == SystemSymbol);
+
+      return base.OnInitializedAsync();
+   }
+
+   private string JoinOres(IEnumerable<Survey.OreDeposit> oreDeposits)
+   {
+      var strings = oreDeposits.Select(x => x.Deposit.ToString());
+      return string.Join(",", strings);
+   } 
+
+}

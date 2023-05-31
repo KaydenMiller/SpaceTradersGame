@@ -7,6 +7,8 @@ namespace SpaceTraders.Pages.Ship;
 public class ShipApiService
 {
     private readonly SpaceTradersApi _api;
+    
+    public List<Survey> Surveys { get; set; } = new();
 
     public ShipApiService(SpaceTradersApi api)
     {
@@ -195,6 +197,8 @@ public class ShipApiService
            .PostAsync();
             
         var result = await response.GetJsonAsync<SpaceTradersObjectResponse<SurveyResponse>>();
+        
+        Surveys.AddRange(result.Data.Surveys);
 
         return result.Data; 
     }

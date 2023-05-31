@@ -31,6 +31,9 @@
                         <MudButton Color="Color.Primary"
                                    Variant="Variant.Filled"
                                    OnClick="@(Extract)">Extract</MudButton>
+                        <MudButton Color="Color.Primary"
+                                   Variant="Variant.Filled"
+                                   OnClick="@(Survey)">Survey</MudButton>
                     </MudStack>
                 </CellTemplate>
             </TemplateColumn>
@@ -84,6 +87,11 @@
     private bool ShipHere(LocationInfo location)
     {
         return this.ActiveShip.NavigationInfo.WaypointSymbol.ToString() == location.Symbol.ToString();
+    }
+
+    private async Task Survey()
+    {
+        var response = await ShipApiService.Survey(ActiveShip);
     }
 
 }
