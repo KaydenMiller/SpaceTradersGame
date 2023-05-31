@@ -7,3 +7,8 @@ Content-Type: application/json
 POST https://api.spacetraders.io/v2/my/ships/DEATH2142ZERG-1/survey
 Authorization: Bearer {{apikey}} 
 Content-Type: application/json
+
+###
+GET https://api.spacetraders.io/v2/my/ships
+Authorization: Bearer {{apikey}}
+Content-Type: application/json

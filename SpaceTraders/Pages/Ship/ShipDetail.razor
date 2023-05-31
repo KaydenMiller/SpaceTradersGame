@@ -5,7 +5,7 @@
 @using SpaceTraders.Pages.ShipScripts
 @inject ShipApiService ShipApiService
 @inject LocationApiService LocationApiService
-@inject ILogger<MineAndSell> MiningLogger
+@inject ShipScriptService ShipScriptService
 
 <MudPaper Elevation="3" Class="ma-2 pa-5">
     <MudText Typo="Typo.h5">@ShipSymbol</MudText>
@@ -24,12 +24,15 @@
     }
     else
     {
-        <MudButton Color="Color.Primary"
+        <MudSelect T="string"
+                   Label="Active Script" 
                    Variant="Variant.Filled"
-                   OnClick="@(RunMiningScript)">
-            Run Mining Script
-        </MudButton>
-        
+                   SelectedValuesChanged="@(RegisterShipWithScript)"
+                   @bind-Value="ActiveShipScript">
+            <MudSelectItem Value="@("Idle")"/>
+            <MudSelectItem Value="@("MineAndSell")"/>
+        </MudSelect>
+
         <MudText Typo="Typo.body1">Current System: @CurrentShip.NavigationInfo.SystemSymbol</MudText>
         <MudText Typo="Typo.body1">Current Waypoint: @CurrentShip.NavigationInfo.WaypointSymbol</MudText>
         <MudText Typo="Typo.body1">
@@ -77,9 +80,11 @@
     [Parameter]
     public string ShipSymbol { get; set; } = default!;
 
+    private string? ActiveShipScript { get; set; }
+
     private Ship? CurrentShip { get; set; }
     private ShipCooldown? ShipCooldown { get; set; }
-    private IEnumerable<LocationInfo> NearbyLocations { get; set; }= Enumerable.Empty<LocationInfo>();
+    private IEnumerable<LocationInfo> NearbyLocations { get; set; } = Enumerable.Empty<LocationInfo>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,15 +95,15 @@
     {
         CurrentShip = await ShipApiService.GetShipDetail(ShipSymbol);
         ShipCooldown = await ShipApiService.GetShipCooldown(CurrentShip);
+        ActiveShipScript = ShipScriptService.GetActiveScript(CurrentShip);
+        RegisterShipWithScript(new[] { ActiveShipScript });
         NearbyLocations = await LocationApiService.GetSystemInfo(CurrentShip.NavigationInfo.WaypointSymbol);
     }
 
-    private async Task RunMiningScript()
+    private void RegisterShipWithScript(IEnumerable<string> selectedValues)
     {
-        if (CurrentShip is null) throw new NullReferenceException("Current Ship cannot be null inorder to mine");
-        
-        var miningScript = new MineAndSell(ShipApiService, MiningLogger);
-        await miningScript.Run(CurrentShip);
+        if (CurrentShip is null) throw new NullReferenceException("Cannot Register Ship that is Null");
+        ShipScriptService.RegisterShip(CurrentShip!, selectedValues.First());
     }
 
 }
