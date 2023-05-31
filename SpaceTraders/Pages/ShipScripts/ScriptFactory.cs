@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using SpaceTraders.Core;
 using SpaceTraders.Pages.Ship;
 
 namespace SpaceTraders.Pages.ShipScripts;
@@ -26,6 +27,7 @@ public class ScriptFactory
         {
             nameof(Idle) => new Idle(),
             nameof(MineAndSell) => new MineAndSell(_apiService, _loggerFactory.CreateLogger<MineAndSell>()),
+            nameof(SurveyBelt) => new SurveyBelt(_apiService, _loggerFactory.CreateLogger<SurveyBelt>()),
             _ => throw new UnreachableException()
         };
     }

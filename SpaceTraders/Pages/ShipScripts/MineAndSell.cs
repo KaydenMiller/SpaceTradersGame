@@ -7,7 +7,7 @@ public class MineAndSell : IScript
     private readonly ShipApiService _shipApiService;
     private readonly ILogger<MineAndSell> _logger;
 
-    public string Name { get; } = "MineAndSell";
+    public string Name { get; } = nameof(MineAndSell);
     public bool Running { get; private set; } = false;
 
     public MineAndSell(ShipApiService shipApiService, ILogger<MineAndSell> logger)
