@@ -1,0 +1,41 @@
+﻿@page "/Markets/{WaypointString}"
+@using SpaceTraders.Core
+@inject MarketApiService MarketApiService;
+
+@if (WaypointString is not null)
+{
+    <MudDataGrid T="Core.TradeGood" Items="@MarketExchanges" SortMode="SortMode.Multiple" Filterable="true">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Market: @(MarketDetails.Id.ToString() ?? "Unknown Market Symbol") </MudText>
+            <MudSpacer/>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn T="TradeGood" TProperty="string" Property="exchange => exchange.Name"/>
+            <PropertyColumn T="TradeGood" TProperty="string" Property="exchange => exchange.Description"/>
+        </Columns>
+    </MudDataGrid>
+}
+else
+{
+    <div>Empty waypoint was received</div>
+}
+
+@code {
+    [Parameter]
+    public string? WaypointString { get; set; }
+    
+    private Core.Location Waypoint { get; set; }
+    private Market? MarketDetails { get; set; }
+    private IEnumerable<Core.TradeGood>? MarketExchanges { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (WaypointString is not null)
+        {
+            this.Waypoint = Core.Location.CreateFromWaypoint(WaypointString);
+            MarketDetails = await MarketApiService.GetMarketInfo(this.Waypoint);
+            this.MarketExchanges = MarketDetails.Exchanges;
+        }
+    }
+
+}

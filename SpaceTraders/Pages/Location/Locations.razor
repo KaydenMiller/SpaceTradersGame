@@ -1,5 +1,6 @@
 ﻿@page "/locations"
 @using SpaceTraders.Pages.Player
+@using SpaceTraders.Core
 @inject LocationApiService LocationApiService;
 @inject PlayerApiService PlayerApiService;
 @inject NavigationManager NavigationManager;
@@ -17,7 +18,12 @@
                     <MudText @onclick="@(() => GoToShipYard(context.Item))">@HasShipYard(context.Item)</MudText>
                 </CellTemplate>
             </TemplateColumn>
-            <PropertyColumn T="LocationInfo" TProperty="bool" Property="info => HasMarketPlace(info)" Title="Market Place"/>
+            <TemplateColumn Title="Market Place">
+                <CellTemplate>
+                    <MudText @onclick="@(() => GoToMarketPlace(context.Item))">@HasMarketPlace(context.Item)</MudText>
+                </CellTemplate>
+            </TemplateColumn>
+            @* <PropertyColumn T="LocationInfo" TProperty="bool" Property="info => HasMarketPlace(info)" Title="Market Place"/> *@
             <PropertyColumn T="LocationInfo" TProperty="string" Property="info => info.Type.ToString()" Title="Type"/>
             <PropertyColumn T="LocationInfo" TProperty="string" Property="info => BuildCords(info)" Title="Cords" Filterable="false" Sortable="false"/>
             <TemplateColumn T="LocationInfo">
@@ -68,6 +74,14 @@
         if (HasShipYard(location))
         {
             NavigationManager.NavigateTo("/ShipYard/" + location.Symbol);
+        }
+    }
+
+    private void GoToMarketPlace(LocationInfo location)
+    {
+        if (HasMarketPlace(location))
+        {
+            NavigationManager.NavigateTo("/Markets/" + location.Symbol);
         }
     }
 

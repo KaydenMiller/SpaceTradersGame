@@ -33,7 +33,8 @@ public class LocationApiService
         return response.Data;
     }
 
-    public async Task<Market> GetMarketPlace(Core.Location systemSymbol,
+    // we have two of these...
+    public async Task<Core.Market> GetMarketPlace(Core.Location systemSymbol,
         Core.Location marketWaypointSymbol)
     {
         var response = await SpaceTradersApi.API_ROOT
@@ -43,7 +44,7 @@ public class LocationApiService
            .AppendPathSegment(marketWaypointSymbol)
            .AppendPathSegment("market")
            .WithOAuthBearerToken(_api.ApiToken)
-           .GetJsonAsync<SpaceTradersObjectResponse<Market>>();
+           .GetJsonAsync<SpaceTradersObjectResponse<Core.Market>>();
 
         return response.Data;
     }

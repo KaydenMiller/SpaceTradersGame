@@ -15,7 +15,7 @@ public class Market
     public IEnumerable<TradeGood> Imports { get; set; }
 
     [JsonPropertyName("exchange")]
-    public IEnumerable<TradeGood> Exchange { get; set; }
+    public IEnumerable<TradeGood> Exchanges { get; set; }
 
     [JsonPropertyName("transactions")]
     public IEnumerable<TradeTransaction> Transactions { get; set; }

@@ -6,6 +6,7 @@ using MudBlazor.Services;
 using SpaceTraders.Pages;
 using SpaceTraders.Pages.Contracts;
 using SpaceTraders.Pages.Location;
+using SpaceTraders.Pages.Market;
 using SpaceTraders.Pages.Player;
 using SpaceTraders.Pages.Ship;
 using SpaceTraders.Pages.ShipScripts;
@@ -41,6 +42,7 @@ builder.Services.AddSingleton<LocationApiService>();
 builder.Services.AddSingleton<ShipYardApiService>();
 builder.Services.AddSingleton<ShipApiService>();
 builder.Services.AddSingleton<ShipScriptService>();
+builder.Services.AddSingleton<MarketApiService>();
 
 builder.Services.AddTransient<Idle>();
 builder.Services.AddTransient<MineAndSell>();
