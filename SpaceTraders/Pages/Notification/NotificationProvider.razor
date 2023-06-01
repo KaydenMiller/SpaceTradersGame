@@ -1,0 +1,16 @@
+﻿@inject ISnackbar Snackbar
+@inject NotificationsService NotificationsService
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        NotificationsService.Notification += OnNotification;
+    }
+
+    private void OnNotification(string type, string name)
+    {
+        Snackbar.Add($"{type}: {name}");
+    }
+
+}

@@ -3,10 +3,12 @@ using System.Text.Json.Serialization;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using MudBlazor.Services;
+using SpaceTraders;
 using SpaceTraders.Pages;
 using SpaceTraders.Pages.Contracts;
 using SpaceTraders.Pages.Location;
 using SpaceTraders.Pages.Market;
+using SpaceTraders.Pages.Notification;
 using SpaceTraders.Pages.Player;
 using SpaceTraders.Pages.Ship;
 using SpaceTraders.Pages.ShipScripts;
@@ -41,8 +43,12 @@ builder.Services.AddSingleton<PlayerApiService>();
 builder.Services.AddSingleton<LocationApiService>();
 builder.Services.AddSingleton<ShipYardApiService>();
 builder.Services.AddSingleton<ShipApiService>();
-builder.Services.AddSingleton<ShipScriptService>();
 builder.Services.AddSingleton<MarketApiService>();
+
+builder.Services.AddSingleton<ScriptFactory>();
+builder.Services.AddSingleton<ShipScriptService>();
+
+builder.Services.AddSingleton<NotificationsService>();
 
 builder.Services.AddTransient<Idle>();
 builder.Services.AddTransient<MineAndSell>();

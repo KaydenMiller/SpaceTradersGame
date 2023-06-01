@@ -8,10 +8,10 @@ public class ShipScriptService
 
     private readonly System.Timers.Timer _scriptTimer = new();
 
-    public ShipScriptService(IServiceProvider provider, ILogger<ShipScriptService> logger, LoggerFactory loggerFactory)
+    public ShipScriptService(ScriptFactory scriptFactory, ILogger<ShipScriptService> logger, LoggerFactory loggerFactory)
     {
         _logger = logger;
-        _scriptFactory = new ScriptFactory(provider);
+        _scriptFactory = scriptFactory;
 
         _scriptTimer.AutoReset = true;
         _scriptTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;

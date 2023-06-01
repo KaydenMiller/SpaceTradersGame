@@ -5,10 +5,11 @@ namespace SpaceTraders.Pages.ShipScripts;
 public class ScriptFactory
 {
     private readonly IServiceProvider _provider;
-    
+
     public ScriptFactory(IServiceProvider provider)
     {
-        _provider = provider;
+        var scope = provider.CreateScope();
+        _provider = scope.ServiceProvider;
     }
     
     public IScript Create<TType>() where TType : IScript
