@@ -42,6 +42,11 @@ builder.Services.AddSingleton<ShipYardApiService>();
 builder.Services.AddSingleton<ShipApiService>();
 builder.Services.AddSingleton<ShipScriptService>();
 
+builder.Services.AddTransient<Idle>();
+builder.Services.AddTransient<MineAndSell>();
+builder.Services.AddTransient<SurveyBelt>();
+builder.Services.AddTransient<AdvancedMineAndSell>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

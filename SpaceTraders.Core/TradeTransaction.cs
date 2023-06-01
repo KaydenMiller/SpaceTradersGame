@@ -14,7 +14,7 @@ public class TradeTransaction
     public string TradeSymbol { get; set; }
     
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public TradeTransactionType Type { get; set; }
     
     [JsonPropertyName("units")]
     public int Units { get; set; }

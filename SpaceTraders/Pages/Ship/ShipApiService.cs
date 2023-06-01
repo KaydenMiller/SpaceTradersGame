@@ -202,4 +202,23 @@ public class ShipApiService
 
         return result.Data; 
     }
+
+    public async Task<Cargo> JettisonCargo(Core.Ship ship, string cargoSymbol, int quantityToJettison)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("my")
+           .AppendPathSegment("ships")
+           .AppendPathSegment(ship.Id)
+           .AppendPathSegment("jettison")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .PostJsonAsync(new
+            {
+                symbol = cargoSymbol,
+                units = quantityToJettison
+            });
+
+        var result = await response.GetJsonAsync<SpaceTradersObjectResponse<Cargo>>();
+
+        return result.Data;
+    }
 }

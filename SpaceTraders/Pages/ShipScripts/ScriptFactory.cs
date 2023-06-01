@@ -1,18 +1,14 @@
 ﻿using System.Diagnostics;
-using SpaceTraders.Core;
-using SpaceTraders.Pages.Ship;
 
 namespace SpaceTraders.Pages.ShipScripts;
 
 public class ScriptFactory
 {
-    private readonly ShipApiService _apiService;
-    private readonly LoggerFactory _loggerFactory;
-
-    public ScriptFactory(ShipApiService apiService, LoggerFactory loggerFactory)
+    private readonly IServiceProvider _provider;
+    
+    public ScriptFactory(IServiceProvider provider)
     {
-        _apiService = apiService;
-        _loggerFactory = loggerFactory;
+        _provider = provider;
     }
     
     public IScript Create<TType>() where TType : IScript
@@ -25,9 +21,10 @@ public class ScriptFactory
     {
         return typeName switch
         {
-            nameof(Idle) => new Idle(),
-            nameof(MineAndSell) => new MineAndSell(_apiService, _loggerFactory.CreateLogger<MineAndSell>()),
-            nameof(SurveyBelt) => new SurveyBelt(_apiService, _loggerFactory.CreateLogger<SurveyBelt>()),
+            nameof(Idle) => _provider.GetRequiredService<Idle>(),
+            nameof(MineAndSell) => _provider.GetRequiredService<MineAndSell>(),
+            nameof(SurveyBelt) => _provider.GetRequiredService<SurveyBelt>(),
+            nameof(AdvancedMineAndSell) => _provider.GetRequiredService<AdvancedMineAndSell>(),
             _ => throw new UnreachableException()
         };
     }

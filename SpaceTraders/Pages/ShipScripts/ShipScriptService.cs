@@ -1,6 +1,4 @@
-﻿using SpaceTraders.Pages.Ship;
-
-namespace SpaceTraders.Pages.ShipScripts;
+﻿namespace SpaceTraders.Pages.ShipScripts;
 
 public class ShipScriptService
 {
@@ -10,10 +8,10 @@ public class ShipScriptService
 
     private readonly System.Timers.Timer _scriptTimer = new();
 
-    public ShipScriptService(ShipApiService shipApiService, ILogger<ShipScriptService> logger, LoggerFactory loggerFactory)
+    public ShipScriptService(IServiceProvider provider, ILogger<ShipScriptService> logger, LoggerFactory loggerFactory)
     {
         _logger = logger;
-        _scriptFactory = new ScriptFactory(shipApiService, loggerFactory);
+        _scriptFactory = new ScriptFactory(provider);
 
         _scriptTimer.AutoReset = true;
         _scriptTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
@@ -22,7 +20,7 @@ public class ShipScriptService
             // Check if script is currently running or done
             foreach (var scriptAssignment in ScriptAssignments)
             {
-                _logger.LogInformation("Checking if {ShipId} is running {ScriptName}, status is {Running}", scriptAssignment.Value.Ship.Id, scriptAssignment.Value.Script.Name, scriptAssignment.Value.Script.Running);
+                _logger.LogDebug("Checking if {ShipId} is running {ScriptName}, status is {Running}", scriptAssignment.Value.Ship.Id, scriptAssignment.Value.Script.Name, scriptAssignment.Value.Script.Running);
                 if (scriptAssignment.Value.Script.Running is false)
                 {
                     scriptAssignment.Value.Script.Run(scriptAssignment.Value.Ship);

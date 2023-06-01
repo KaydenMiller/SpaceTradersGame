@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using Flurl.Http;
+using SpaceTraders.Core;
 
 namespace SpaceTraders.Pages.Location;
 
@@ -28,6 +29,21 @@ public class LocationApiService
            .AppendPathSegments("systems", location.System, "waypoints")
            .WithOAuthBearerToken(_api.ApiToken)
            .GetJsonAsync<SpaceTradersArrayResponse<LocationInfo>>();
+
+        return response.Data;
+    }
+
+    public async Task<Market> GetMarketPlace(Core.Location systemSymbol,
+        Core.Location marketWaypointSymbol)
+    {
+        var response = await SpaceTradersApi.API_ROOT
+           .AppendPathSegment("systems")
+           .AppendPathSegment(systemSymbol.System)
+           .AppendPathSegment("waypoints")
+           .AppendPathSegment(marketWaypointSymbol)
+           .AppendPathSegment("market")
+           .WithOAuthBearerToken(_api.ApiToken)
+           .GetJsonAsync<SpaceTradersObjectResponse<Market>>();
 
         return response.Data;
     }

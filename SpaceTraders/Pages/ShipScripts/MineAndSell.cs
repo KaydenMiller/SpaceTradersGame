@@ -43,9 +43,8 @@ public class MineAndSell : IScript
         {
             _logger.LogInformation("Extracting");
             var extractionResponse = await _shipApiService.ExtractOre(ship);
-            cooldown = extractionResponse.Cooldown;
-            var timeUntilReady = cooldown.Expiration - DateTime.UtcNow;
-            _logger.LogInformation("Cooldown Expiration: {Expiration}", cooldown.Expiration.ToString());
+            var timeUntilReady = cooldown?.GetWaitTime(); 
+            _logger.LogInformation("Cooldown Expiration: {Expiration}", cooldown?.Expiration.ToString());
             _logger.LogInformation("Cooldown Until Next Extraction: {Cooldown}", timeUntilReady.ToString());
             _logger.LogInformation("Cargo: {Count} of {Capacity}", extractionResponse.Cargo.TotalUnits, extractionResponse.Cargo.Capacity);
             cargoResponse = extractionResponse.Cargo;
