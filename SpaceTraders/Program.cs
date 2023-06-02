@@ -2,13 +2,12 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Flurl.Http;
 using Flurl.Http.Configuration;
+using MudBlazor;
 using MudBlazor.Services;
-using SpaceTraders;
 using SpaceTraders.Pages;
 using SpaceTraders.Pages.Contracts;
 using SpaceTraders.Pages.Location;
 using SpaceTraders.Pages.Market;
-using SpaceTraders.Pages.Notification;
 using SpaceTraders.Pages.Player;
 using SpaceTraders.Pages.Ship;
 using SpaceTraders.Pages.ShipScripts;
@@ -27,7 +26,12 @@ FlurlHttp.Configure(settings =>
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(cfg =>
+{
+    cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
+    cfg.SnackbarConfiguration.PreventDuplicates = false;
+    cfg.SnackbarConfiguration.ShowCloseIcon = true;
+});;
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -48,12 +52,15 @@ builder.Services.AddSingleton<MarketApiService>();
 builder.Services.AddSingleton<ScriptFactory>();
 builder.Services.AddSingleton<ShipScriptService>();
 
-builder.Services.AddSingleton<NotificationsService>();
-
 builder.Services.AddTransient<Idle>();
 builder.Services.AddTransient<MineAndSell>();
 builder.Services.AddTransient<SurveyBelt>();
 builder.Services.AddTransient<AdvancedMineAndSell>();
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<Program>();
+});
 
 var app = builder.Build();
 

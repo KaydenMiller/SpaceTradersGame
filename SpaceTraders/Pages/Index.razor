@@ -1,7 +1,25 @@
 ﻿@page "/"
+@using SpaceTraders.Pages.Notification
+@inject IMediator Mediator;
 
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<MudButton Color="Color.Dark" @onclick="@(() => Mediator.Publish(new SnackBarNotification(){ Name = "test", Severity = Severity.Normal}))">Normal Snackbar</MudButton>
+<MudButton Color="Color.Info" @onclick="@(() => Mediator.Publish(new SnackBarNotification(){ Name = "test", Severity = Severity.Info, Color = Color.Tertiary, Variant = Variant.Outlined}))">Info Snackbar</MudButton>
+<MudButton Color="Color.Success" @onclick="@(() => Mediator.Publish(new SnackBarNotification(){ Name = "test", Severity = Severity.Success}))">Success Snackbar</MudButton>
+<MudButton Color="Color.Warning" @onclick="@(() => Mediator.Publish(new SnackBarNotification(){ Name = "test", Severity = Severity.Warning}))">Warning Snackbar</MudButton>
+<MudButton Color="Color.Error" @onclick="@(() => Mediator.Publish(new SnackBarNotification(){ Name = "test", Severity = Severity.Error}))">Error Snackbar</MudButton>
+
+@code
+{
+
+    
+    public void somefunc()
+    {
+        Console.WriteLine("temp");
+    }
+}

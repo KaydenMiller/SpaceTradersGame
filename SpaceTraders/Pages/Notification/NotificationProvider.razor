@@ -1,16 +1,17 @@
 ﻿@inject ISnackbar Snackbar
-@inject NotificationsService NotificationsService
 
 @code {
 
     protected override void OnInitialized()
     {
-        NotificationsService.Notification += OnNotification;
+        InfoNotificationReceived += OnInfoNotificationReceived;
     }
 
-    private void OnNotification(string type, string name)
+    private void OnInfoNotificationReceived(object? sender, SnackBarNotificationEventArgs e)
     {
-        Snackbar.Add($"{type}: {name}");
+        Snackbar.Add($"{e.Name}: {e.Description ?? ""}", e.Severity, (options =>
+        {
+            options.SnackbarVariant = e.Variant ?? Variant.Text;
+        }));
     }
-
 }

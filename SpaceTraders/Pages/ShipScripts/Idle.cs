@@ -1,22 +1,25 @@
-﻿using SpaceTraders.Pages.Notification;
+﻿using MediatR;
+using SpaceTraders.Pages.Notification;
 
 namespace SpaceTraders.Pages.ShipScripts;
 
 public class Idle : IScript
 {
-    private readonly NotificationsService _notificationsService;
+    private readonly IMediator _mediator;
+    // private readonly NotificationsService _notificationsService;
+    
     
     public string Name { get; } = nameof(Idle);
     public bool Running { get; } = false;
 
-    public Idle(NotificationsService notificationsService)
+    public Idle(IMediator mediator)
     {
-        _notificationsService = notificationsService;
+        _mediator = mediator;
     } 
     
     public Task Run(Core.Ship ship)
     {
-        _notificationsService.InfoNotification("This is a test");
+        _mediator.Publish(new SnackBarNotification());
         return Task.CompletedTask;
     }
 }
