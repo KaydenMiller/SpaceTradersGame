@@ -1,7 +1,10 @@
 ﻿using System.Collections.Immutable;
 using System.Security.Cryptography.X509Certificates;
+using MediatR;
+using MudBlazor;
 using SpaceTraders.Core;
 using SpaceTraders.Pages.Location;
+using SpaceTraders.Pages.Notification;
 using SpaceTraders.Pages.Ship;
 
 namespace SpaceTraders.Pages.ShipScripts;
@@ -11,16 +14,19 @@ public class AdvancedMineAndSell : IScript
     private readonly ShipApiService _shipApiService;
     private readonly LocationApiService _locationApiService;
     private readonly ILogger<AdvancedMineAndSell> _logger;
+    private readonly IMediator _mediator;
     public string Name { get; } = nameof(AdvancedMineAndSell);
     public bool Running { get; private set; }
 
     public IEnumerable<MarketTradeGood> TradeGoods { get; set; } = Enumerable.Empty<MarketTradeGood>();
     public AdvancedMineAndSell(ShipApiService shipApiService,
         LocationApiService locationApiService,
-        ILogger<AdvancedMineAndSell> logger) {
+        ILogger<AdvancedMineAndSell> logger,
+        IMediator mediator) {
         _shipApiService = shipApiService;
         _locationApiService = locationApiService;
         _logger = logger;
+        _mediator = mediator;
     }
     
     public async Task Run(Core.Ship ship)
@@ -72,6 +78,8 @@ public class AdvancedMineAndSell : IScript
         {
             await Task.Delay(waitTime ?? TimeSpan.Zero);
             var extraction = await PerformAction(async () => await _shipApiService.ExtractOre(ship, surveyToUse ?? null));
+            this._mediator.Publish(new SnackBarNotification(extraction.Extraction.ShipSymbol,
+                $"Mined: {extraction.Extraction.Yield.Units} {extraction.Extraction.Yield.Symbol}", Severity.Info));
             ship.Cargo = extraction.Cargo;
             waitTime = extraction.Cooldown.GetWaitTime();
             _logger.LogInformation("{ScriptId}: {ShipId}: Extracted {Quantity} of {Name}", nameof(AdvancedMineAndSell), extraction.Extraction.ShipSymbol, extraction.Extraction.Yield.Units, extraction.Extraction.Yield.Symbol);

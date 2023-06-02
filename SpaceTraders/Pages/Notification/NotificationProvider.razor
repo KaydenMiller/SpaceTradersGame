@@ -9,9 +9,9 @@
 
     private void OnInfoNotificationReceived(object? sender, SnackBarNotificationEventArgs e)
     {
-        Snackbar.Add($"{e.Name}: {e.Description ?? ""}", e.Severity, (options =>
+        Snackbar.Add($"{e.Name}: {e.Description ?? ""}", e.Severity, options =>
         {
-            options.SnackbarVariant = e.Variant ?? Variant.Text;
-        }));
+            options.SnackbarVariant = e.Variant;
+        });
     }
 }
