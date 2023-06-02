@@ -2,16 +2,19 @@
 @using SpaceTraders.Core
 @using SpaceTraders.Pages.Ship
 @using System.Globalization
+@using SpaceTraders.Algorithms
 @inject ShipApiService ShipApiService
+@inject LocationApiService LocationApiService
 
 <MudPaper Elevation="3" Class="ma-2 pa-10">
    <MudDataGrid T="Survey" Items="Surveys">
       <Columns>
          <PropertyColumn T="Survey" TProperty="string" Property="s => s.Signature"/>
          <PropertyColumn T="Survey" TProperty="string" Property="s => s.Symbol"/>
-         <PropertyColumn T="Survey" TProperty="string" Property="s => s.Expiration.ToString(CultureInfo.InvariantCulture)"/>
+         <PropertyColumn T="Survey" TProperty="string" Property="@(s => s.Expiration.ToLocalTime().ToString("g"))" Title="Expiration"/>
          <PropertyColumn T="Survey" TProperty="string" Property="s => s.Size"/>
-         <PropertyColumn T="Survey" TProperty="string" Property="s => JoinOres(s.OreDeposits)"/>
+         <PropertyColumn T="Survey" TProperty="string" Property="s => JoinOres(s.OreDeposits)" Title="Deposits"/>
+         <PropertyColumn T="Survey" TProperty="string" Property="s => CalculateMarketWeight(s)" Title="Survey Weight"/>
       </Columns>
    </MudDataGrid>
 </MudPaper>
@@ -21,11 +24,15 @@
    [Parameter]
    public string SystemSymbol { get; set; } = default!;
 
-   public IEnumerable<Survey> Surveys { get; set; } = Enumerable.Empty<Survey>();
+   private SurveyMarketViabilityWeightCalculation _weightCalculation = new();
+
+   private IEnumerable<Survey> Surveys { get; set; } = Enumerable.Empty<Survey>();
+   private IEnumerable<MarketTradeGood> TradeGoods { get; set; } = Enumerable.Empty<MarketTradeGood>();
 
    protected override Task OnInitializedAsync()
    {
       Surveys = ShipApiService.Surveys.Where(s => s.Symbol == SystemSymbol);
+      TradeGoods = LocationApiService.MarketTradeGoods ?? Enumerable.Empty<MarketTradeGood>();
 
       return base.OnInitializedAsync();
    }
@@ -34,6 +41,12 @@
    {
       var strings = oreDeposits.Select(x => x.Deposit.ToString());
       return string.Join(",", strings);
-   } 
+   }
+
+   private string CalculateMarketWeight(Survey survey)
+   {
+      if (!TradeGoods.Any()) return "?";
+      return _weightCalculation.Calculate(survey, TradeGoods).Weight.ToString();
+   }
 
 }

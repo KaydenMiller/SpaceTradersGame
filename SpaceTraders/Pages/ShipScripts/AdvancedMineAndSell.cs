@@ -1,5 +1,5 @@
 ﻿using System.Collections.Immutable;
-using System.Security.Cryptography.X509Certificates;
+using SpaceTraders.Algorithms;
 using SpaceTraders.Core;
 using SpaceTraders.Pages.Location;
 using SpaceTraders.Pages.Ship;
@@ -40,7 +40,7 @@ public class AdvancedMineAndSell : IScript
 
         // Get local trade goods
         TradeGoods = (await PerformAction(async () => await _locationApiService.GetMarketPlace(ship.NavigationInfo.WaypointSymbol,
-                ship.NavigationInfo.WaypointSymbol))).TradeGoods;
+                ship.NavigationInfo.WaypointSymbol))).TradeGoods.ToList();
         _logger.LogInformation("{ScriptId}: {ShipId}: getting marketplace data", nameof(AdvancedMineAndSell), ship.Id);
         
         // What is the best good to be mining
@@ -62,11 +62,22 @@ public class AdvancedMineAndSell : IScript
         var waitTime = (await PerformAction(async () => await _shipApiService.GetShipCooldown(ship)))
             ?.GetWaitTime();
 
+        var surveyAlgorithm = new SurveyMarketViabilityWeightCalculation();
+        
         do
         {
-            var surveyToUse = GetBestSurvey(goodsToKeep);
+            var weightedSurveys = surveyAlgorithm.Calculate(_shipApiService.Surveys, TradeGoods).ToList();
+            _logger.LogInformation("{ScriptId}: {ShipId}: Weighted Surveys {WeightedSurveys}", nameof(AdvancedMineAndSell), ship.Id, weightedSurveys);
+            _logger.LogInformation("{ScriptId}: {ShipId}: Market Prices {@MarketPrices}", nameof(AdvancedMineAndSell), ship.Id, TradeGoods.Select(x => new { Id = x.Id, SellFor = x.SellPrice }));
+            var surveyToUse = weightedSurveys.MaxBy(s => s.Weight)?.Survey;
             if (surveyToUse is not null)
-                _logger.LogInformation("{ScriptId}: {ShipId}: Using survey {Signature}; {Items}", nameof(AdvancedMineAndSell), ship.Id, surveyToUse.Signature, surveyToUse.OreDeposits.Select(x => x.Deposit));
+            {
+                _logger.LogInformation("{ScriptId}: {ShipId}: Using survey {Signature}; {Items}",
+                    nameof(AdvancedMineAndSell), ship.Id, surveyToUse.Signature,
+                    surveyToUse.OreDeposits.Select(x => x.Deposit));
+                _logger.LogInformation("{ScriptId}: {ShipId}: {SurveyId}: {SurveyExpiration}",
+                    nameof(AdvancedMineAndSell), ship.Id, surveyToUse.Signature, surveyToUse.Expiration.ToLocalTime().ToString("g"));
+            }
             else 
                 _logger.LogInformation("{ScriptId}: {ShipId}: No survey found", nameof(AdvancedMineAndSell), ship.Id);
             
@@ -98,27 +109,6 @@ public class AdvancedMineAndSell : IScript
         if (updatedCargo is not null) ship.Cargo = updatedCargo;
 
         Running = false;
-    }
-
-    private Survey? GetBestSurvey(ImmutableArray<string> goodsToMine)
-    {
-        var surveys = _shipApiService.Surveys.ToImmutableArray();
-        var surveysThatContainGoodDeposits = surveys
-           .Where(s => DateTime.UtcNow < s.Expiration)
-           .Where(s => s.OreDeposits
-               .Select(od => od.Deposit)
-               .Any(od => goodsToMine.Contains(od.ToString())));
-        var bestSurvey = surveysThatContainGoodDeposits
-           .Select(s =>
-            {
-                var countOfGoodOres = s.OreDeposits.Count(x => goodsToMine.Contains(x.Deposit.ToString()));
-                return new
-                {
-                    Survey = s,
-                    CountOfGoodOres = countOfGoodOres
-                };
-            }).MaxBy(x => x.CountOfGoodOres)?.Survey;
-        return bestSurvey;
     }
 
     private async Task JettisonAndUpdateCargo(Core.Ship ship, ImmutableArray<string> goodsToKeep)

@@ -8,6 +8,8 @@ public class LocationApiService
 {
     private readonly SpaceTradersApi _api;
 
+    public IEnumerable<MarketTradeGood>? MarketTradeGoods { get; private set; }
+
     public LocationApiService(SpaceTradersApi api)
     {
         _api = api;
@@ -45,6 +47,8 @@ public class LocationApiService
            .AppendPathSegment("market")
            .WithOAuthBearerToken(_api.ApiToken)
            .GetJsonAsync<SpaceTradersObjectResponse<Core.Market>>();
+
+        MarketTradeGoods = response.Data.TradeGoods;
 
         return response.Data;
     }

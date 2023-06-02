@@ -1,5 +1,7 @@
 ﻿using Flurl;
 using Flurl.Http;
+using Polly;
+using Polly.Retry;
 using SpaceTraders.Core;
 
 namespace SpaceTraders.Pages.Ship;
@@ -7,12 +9,14 @@ namespace SpaceTraders.Pages.Ship;
 public class ShipApiService
 {
     private readonly SpaceTradersApi _api;
-    
+    private readonly ILogger<ShipApiService> _logger;
+
     public List<Survey> Surveys { get; set; } = new();
 
-    public ShipApiService(SpaceTradersApi api)
+    public ShipApiService(SpaceTradersApi api, ILogger<ShipApiService> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
     public async Task<Core.Ship> GetShipDetail(string shipSymbol)
@@ -156,7 +160,7 @@ public class ShipApiService
 
         if (survey is not null)
         {
-            response = await request.PostJsonAsync(new 
+            response = await request.PostJsonAsync(new
             {
                 survey
             });
