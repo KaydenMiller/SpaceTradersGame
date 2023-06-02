@@ -62,14 +62,14 @@ public class AdvancedMineAndSell : IScript
         var waitTime = (await PerformAction(async () => await _shipApiService.GetShipCooldown(ship)))
             ?.GetWaitTime();
 
-        var surveyToUse = GetBestSurvey(goodsToKeep);
-        if (surveyToUse is not null)
-            _logger.LogInformation("{ScriptId}: {ShipId}: Using survey {Signature}; {Items}", nameof(AdvancedMineAndSell), ship.Id, surveyToUse.Signature, surveyToUse.OreDeposits.Select(x => x.Deposit));
-        else 
-            _logger.LogInformation("{ScriptId}: {ShipId}: No survey found", nameof(AdvancedMineAndSell), ship.Id);
-        
         do
         {
+            var surveyToUse = GetBestSurvey(goodsToKeep);
+            if (surveyToUse is not null)
+                _logger.LogInformation("{ScriptId}: {ShipId}: Using survey {Signature}; {Items}", nameof(AdvancedMineAndSell), ship.Id, surveyToUse.Signature, surveyToUse.OreDeposits.Select(x => x.Deposit));
+            else 
+                _logger.LogInformation("{ScriptId}: {ShipId}: No survey found", nameof(AdvancedMineAndSell), ship.Id);
+            
             await Task.Delay(waitTime ?? TimeSpan.Zero);
             var extraction = await PerformAction(async () => await _shipApiService.ExtractOre(ship, surveyToUse ?? null));
             ship.Cargo = extraction.Cargo;
@@ -104,6 +104,7 @@ public class AdvancedMineAndSell : IScript
     {
         var surveys = _shipApiService.Surveys.ToImmutableArray();
         var surveysThatContainGoodDeposits = surveys
+           .Where(s => DateTime.UtcNow < s.Expiration)
            .Where(s => s.OreDeposits
                .Select(od => od.Deposit)
                .Any(od => goodsToMine.Contains(od.ToString())));

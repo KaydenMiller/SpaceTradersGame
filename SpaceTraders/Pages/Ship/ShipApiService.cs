@@ -156,7 +156,10 @@ public class ShipApiService
 
         if (survey is not null)
         {
-            response = await request.PostJsonAsync(survey);
+            response = await request.PostJsonAsync(new 
+            {
+                survey
+            });
         }
         else
         {
