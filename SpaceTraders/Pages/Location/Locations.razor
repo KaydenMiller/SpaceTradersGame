@@ -1,6 +1,6 @@
 ﻿@page "/locations"
 @using SpaceTraders.Pages.Player
-@using SpaceTraders.Core
+@using SpaceTraders.Pages.ConditionalIcons
 @inject LocationApiService LocationApiService;
 @inject PlayerApiService PlayerApiService;
 @inject NavigationManager NavigationManager;
@@ -13,17 +13,11 @@
         </ToolBarContent>
         <Columns>
             <PropertyColumn T="LocationInfo" TProperty="string" Property="info => info.Symbol.ToString()"/>
-            <TemplateColumn Title="Ship Yard" T="LocationInfo">
+            <TemplateColumn T="LocationInfo" Title="Info">
                 <CellTemplate>
-                    <MudText @onclick="@(() => GoToShipYard(context.Item))">@HasShipYard(context.Item)</MudText>
+                    <ConditionalIcons IconsToDisplay="@BuildIconList(context.Item)"/>
                 </CellTemplate>
             </TemplateColumn>
-            <TemplateColumn Title="Market Place">
-                <CellTemplate>
-                    <MudText @onclick="@(() => GoToMarketPlace(context.Item))">@HasMarketPlace(context.Item)</MudText>
-                </CellTemplate>
-            </TemplateColumn>
-            @* <PropertyColumn T="LocationInfo" TProperty="bool" Property="info => HasMarketPlace(info)" Title="Market Place"/> *@
             <PropertyColumn T="LocationInfo" TProperty="string" Property="info => info.Type.ToString()" Title="Type"/>
             <PropertyColumn T="LocationInfo" TProperty="string" Property="info => BuildCords(info)" Title="Cords" Filterable="false" Sortable="false"/>
             <TemplateColumn T="LocationInfo">
@@ -53,7 +47,15 @@
         Location = Core.Location.CreateFromWaypoint(playerInfo.Headquarters);
         LocationInfos = await LocationApiService.GetSystemInfo(Location);
     }
-
+    
+    private IEnumerable<Icon> BuildIconList(LocationInfo locationInfo)
+    {
+        return new Icon[]
+        {
+            new (Icons.Material.Filled.Rocket, HasShipYard(locationInfo)),
+            new (Icons.Material.Filled.Storefront, HasMarketPlace(locationInfo)),
+        };
+    }
     private bool HasShipYard(LocationInfo locationInfo)
     {
         return locationInfo.Traits.Any(x => x.Symbol == "SHIPYARD");
