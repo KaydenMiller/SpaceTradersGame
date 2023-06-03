@@ -19,21 +19,6 @@
                         <MudButton Color="Color.Primary" 
                                    Variant="Variant.Filled"
                                    OnClick="@(() => Navigate(context.Item.Symbol))">Navigate</MudButton>
-                        <MudButton Color="Color.Primary" 
-                                   Variant="Variant.Filled"
-                                   OnClick="@(Dock)">Dock</MudButton>
-                        <MudButton Color="Color.Primary"
-                                   Variant="Variant.Filled"
-                                   OnClick="@(Orbit)">Orbit</MudButton>
-                        <MudButton Color="Color.Primary"
-                                   Variant="Variant.Filled"
-                                   OnClick="@(Refuel)">Refuel</MudButton>
-                        <MudButton Color="Color.Primary"
-                                   Variant="Variant.Filled"
-                                   OnClick="@(Extract)">Extract</MudButton>
-                        <MudButton Color="Color.Primary"
-                                   Variant="Variant.Filled"
-                                   OnClick="@(Survey)">Survey</MudButton>
                     </MudStack>
                 </CellTemplate>
             </TemplateColumn>
@@ -53,26 +38,6 @@
     {
         var response = await ShipApiService.Navigate(ActiveShip, waypoint);
     }
-
-    private async Task Dock()
-    {
-        var response = await ShipApiService.DockCurrent(ActiveShip);
-    }
-    
-    private async Task Refuel()
-    {
-        var response = await ShipApiService.Refuel(ActiveShip);
-    }
-
-    private async Task Orbit()
-    {
-        var response = await ShipApiService.OrbitCurrent(ActiveShip);
-    }
-
-    private async Task Extract()
-    {
-        var response = await ShipApiService.ExtractOre(ActiveShip);
-    }
     
     private bool HasShipYard(LocationInfo locationInfo)
     {
@@ -88,10 +53,4 @@
     {
         return this.ActiveShip.NavigationInfo.WaypointSymbol.ToString() == location.Symbol.ToString();
     }
-
-    private async Task Survey()
-    {
-        var response = await ShipApiService.Survey(ActiveShip);
-    }
-
 }
