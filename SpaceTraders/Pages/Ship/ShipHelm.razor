@@ -1,5 +1,6 @@
 ﻿@using SpaceTraders.Pages.Location
 @using SpaceTraders.Core
+@using SpaceTraders.Pages.ConditionalIcons
 @inject ShipApiService ShipApiService
 
 <MudPaper Elevation="3" Class="ma-2 pa-10">
@@ -10,9 +11,11 @@
         <Columns>
             <PropertyColumn T="LocationInfo" TProperty="string" Property="l => l.Symbol.ToString()"/>
             <PropertyColumn T="LocationInfo" TProperty="string" Property="l => l.Type.ToString()"/>
-            <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => HasShipYard(l)" Title="Ship Yard" />
-            <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => HasMarketPlace(l)" Title="Market Place" />
-            <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => ShipHere(l)" Title="Ship Here"></PropertyColumn>
+            <TemplateColumn T="LocationInfo" Title="Info">
+                <CellTemplate>
+                    <ConditionalIcons IconsToDisplay="BuildIconList(context.Item)"/>
+                </CellTemplate>
+            </TemplateColumn>
             <TemplateColumn T="LocationInfo">
                 <CellTemplate>
                     <MudStack Row>
@@ -27,12 +30,33 @@
 </MudPaper>
 
 @code {
+    
+    /*
+     * Ship Yard: warehouse
+     * market place: store front / store 
+     * ship here: MyLocation / locationpin
+     */
 
      [Parameter]
      public IEnumerable<LocationInfo> NearbyLocations { get; set; } = Enumerable.Empty<LocationInfo>();
 
     [Parameter]
     public Ship ActiveShip { get; set; } = default!;
+
+    // public static IEnumerable<ConditionIcons> icons = new ConditionIcons[]
+    // {
+    //     new ConditionIcons(@Icons.Material.Filled.Warehouse, HasShipYard())
+    // };
+
+    private IEnumerable<Icon> BuildIconList(LocationInfo locationInfo)
+    {
+        return new Icon[]
+        {
+            new Icon(Icons.Material.Filled.Rocket, HasShipYard(locationInfo)),
+            new Icon(Icons.Material.Filled.Storefront, HasMarketPlace(locationInfo)),
+            new Icon(Icons.Material.Filled.MyLocation, ShipHere(locationInfo))
+        };
+    }
 
     private async Task Navigate(Core.Location waypoint)
     {
