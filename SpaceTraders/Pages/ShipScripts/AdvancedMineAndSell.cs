@@ -1,6 +1,9 @@
 ﻿using System.Collections.Immutable;
+using Flurl.Http;
+using Polly;
 using SpaceTraders.Algorithms;
 using SpaceTraders.Core;
+using SpaceTraders.HttpPolicies;
 using SpaceTraders.Pages.Location;
 using SpaceTraders.Pages.Ship;
 
@@ -82,11 +85,35 @@ public class AdvancedMineAndSell : IScript
                 _logger.LogInformation("{ScriptId}: {ShipId}: No survey found", nameof(AdvancedMineAndSell), ship.Id);
             
             await Task.Delay(waitTime ?? TimeSpan.Zero);
-            var extraction = await PerformAction(async () => await _shipApiService.ExtractOre(ship, surveyToUse ?? null));
-            ship.Cargo = extraction.Cargo;
-            waitTime = extraction.Cooldown.GetWaitTime();
-            _logger.LogInformation("{ScriptId}: {ShipId}: Extracted {Quantity} of {Name}", nameof(AdvancedMineAndSell), extraction.Extraction.ShipSymbol, extraction.Extraction.Yield.Units, extraction.Extraction.Yield.Symbol);
-            
+            try
+            {
+                var extraction = await Policy
+                   .WrapAsync(
+                        SpaceTradersHttpPolicyHelpers.SpaceTradersPolicyAsync(),
+                        SpaceTradersHttpPolicyHelpers.ShipCooldownPolicy() 
+                        // Policy
+                        //    .Handle<SpaceTradersApiException>()
+                        //    .FallbackAsync<ExtractionResponse>(async (_) =>
+                        //     {
+                        //         _logger.LogInformation("{ScriptId}: {ShipId}: Could not extract using survey because it was expired", nameof(AdvancedMineAndSell), ship.Id);
+                        //         return await PerformAction(async () => await _shipApiService.ExtractOre(ship));
+                        //     })
+                    )
+                   .ExecuteAsync(async () =>
+                    {
+                        return await PerformAction(async () => await _shipApiService.ExtractOre(ship, surveyToUse ?? null)); 
+                    });
+
+                ship.Cargo = extraction.Cargo;
+                waitTime = extraction.Cooldown.GetWaitTime();
+                _logger.LogInformation("{ScriptId}: {ShipId}: Extracted {Quantity} of {Name}", nameof(AdvancedMineAndSell), extraction.Extraction.ShipSymbol, extraction.Extraction.Yield.Units, extraction.Extraction.Yield.Symbol);
+            }
+            catch (FlurlHttpException fhe)
+            {
+                var data = await fhe.GetResponseStringAsync();
+                _logger.LogError("Flurl received an error, {StatusCode}; {Data}", fhe.StatusCode, data);
+            }
+
             // Clean out bad cargo to save on request time
             await JettisonAndUpdateCargo(ship, goodsToKeep);
         } while (ship.Cargo.TotalUnits < ship.Cargo.Capacity);

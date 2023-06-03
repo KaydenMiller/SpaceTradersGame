@@ -32,7 +32,7 @@ public class SurveyMarketViabilityWeightCalculation
     public IEnumerable<SurveyWeight> Calculate(IEnumerable<Survey> surveys, IEnumerable<MarketTradeGood> tradeGoods)
     {
         var validSurveys = surveys
-           .Where(x => DateTime.UtcNow < x.Expiration);
+           .Where(x => DateTime.UtcNow < (x.Expiration - TimeSpan.FromMinutes(2)));
 
         var weightedSurveys = validSurveys.Select(s => Calculate(s, tradeGoods));
 

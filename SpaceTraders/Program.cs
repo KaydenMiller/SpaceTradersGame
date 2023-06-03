@@ -27,7 +27,7 @@ FlurlHttp.Configure(settings =>
     {
         Console.WriteLine($"REQUEST: {call.Request.Verb.Method}: {call.Request.Url}");
         Console.WriteLine(call.RequestBody);
-        Console.WriteLine($"RESPONSE: {await call.Response.ResponseMessage.Content.ReadAsStringAsync()}");
+        Console.WriteLine($"RESPONSE: {call.Response.StatusCode} {await call.Response.ResponseMessage.Content.ReadAsStringAsync()}");
         foreach (var header in call.Response.Headers)
         {
             Console.WriteLine($"\t{header.Name}: {header.Value}");
