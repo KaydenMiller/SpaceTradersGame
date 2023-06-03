@@ -52,9 +52,9 @@
     {
         return new Icon[]
         {
-            new Icon(Icons.Material.Filled.Rocket, HasShipYard(locationInfo)),
-            new Icon(Icons.Material.Filled.Storefront, HasMarketPlace(locationInfo)),
-            new Icon(Icons.Material.Filled.MyLocation, ShipHere(locationInfo))
+            new (Icons.Material.Filled.Rocket, HasShipYard(locationInfo)),
+            new (Icons.Material.Filled.Storefront, HasMarketPlace(locationInfo)),
+            new (Icons.Material.Filled.MyLocation, ShipHere(locationInfo))
         };
     }
 
