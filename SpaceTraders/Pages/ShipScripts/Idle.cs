@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using MudBlazor;
 using SpaceTraders.Pages.Notification;
 
 namespace SpaceTraders.Pages.ShipScripts;
@@ -20,7 +21,7 @@ public class Idle : IScript
     public Task Run(Core.Ship ship)
     {
         if (AlreadyNotified) { return Task.CompletedTask; }
-        _mediator.Publish(new SnackBarNotification());
+        _mediator.Publish(new SnackBarNotification(ship.Id.ToString(), "Has gone idle", Severity.Normal));
         AlreadyNotified = true;
         return Task.CompletedTask;
     }
