@@ -7,8 +7,8 @@ public class Idle : IScript
 {
     private readonly IMediator _mediator;
     // private readonly NotificationsService _notificationsService;
-    
-    
+
+    public bool AlreadyNotified { get; set; } = false;
     public string Name { get; } = nameof(Idle);
     public bool Running { get; } = false;
 
@@ -19,6 +19,9 @@ public class Idle : IScript
     
     public Task Run(Core.Ship ship)
     {
+        if (AlreadyNotified) { return Task.CompletedTask; }
+        _mediator.Publish(new SnackBarNotification());
+        AlreadyNotified = true;
         return Task.CompletedTask;
     }
 }
