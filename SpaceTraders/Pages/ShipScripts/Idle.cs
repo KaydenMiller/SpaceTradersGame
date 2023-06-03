@@ -19,7 +19,6 @@ public class Idle : IScript
     
     public Task Run(Core.Ship ship)
     {
-        _mediator.Publish(new SnackBarNotification());
         return Task.CompletedTask;
     }
 }
