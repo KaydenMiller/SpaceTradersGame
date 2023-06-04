@@ -1,10 +1,13 @@
 ﻿using System.Collections.Immutable;
 using Flurl.Http;
+using MediatR;
+using MudBlazor;
 using Polly;
 using SpaceTraders.Algorithms;
 using SpaceTraders.Core;
 using SpaceTraders.HttpPolicies;
 using SpaceTraders.Pages.Location;
+using SpaceTraders.Pages.Notification;
 using SpaceTraders.Pages.Ship;
 
 namespace SpaceTraders.Pages.ShipScripts;
@@ -14,16 +17,20 @@ public class AdvancedMineAndSell : IScript
     private readonly ShipApiService _shipApiService;
     private readonly LocationApiService _locationApiService;
     private readonly ILogger<AdvancedMineAndSell> _logger;
+    private readonly IMediator _mediator;
+
     public string Name { get; } = nameof(AdvancedMineAndSell);
     public bool Running { get; private set; }
 
     public IEnumerable<MarketTradeGood> TradeGoods { get; set; } = Enumerable.Empty<MarketTradeGood>();
     public AdvancedMineAndSell(ShipApiService shipApiService,
         LocationApiService locationApiService,
-        ILogger<AdvancedMineAndSell> logger) {
+        ILogger<AdvancedMineAndSell> logger,
+        IMediator mediator) {
         _shipApiService = shipApiService;
         _locationApiService = locationApiService;
         _logger = logger;
+        _mediator = mediator;
     }
     
     public async Task Run(Core.Ship ship)
@@ -107,6 +114,9 @@ public class AdvancedMineAndSell : IScript
                 ship.Cargo = extraction.Cargo;
                 waitTime = extraction.Cooldown.GetWaitTime();
                 _logger.LogInformation("{ScriptId}: {ShipId}: Extracted {Quantity} of {Name}", nameof(AdvancedMineAndSell), extraction.Extraction.ShipSymbol, extraction.Extraction.Yield.Units, extraction.Extraction.Yield.Symbol);
+                _mediator.Publish(new SnackBarNotification(ship.Id,
+                    $"Extracted {extraction.Extraction.Yield.Units} of {extraction.Extraction.Yield.Symbol}",
+                    Severity.Normal));
             }
             catch (FlurlHttpException fhe)
             {
@@ -123,16 +133,18 @@ public class AdvancedMineAndSell : IScript
         ship.NavigationInfo = (await PerformAction(async () => await _shipApiService.GetShipDetail(ship.Id)))
            .NavigationInfo;
         _logger.LogInformation("{ScriptId}: {ShipId}: Docked Ship at {Waypoint}", nameof(AdvancedMineAndSell), ship.Id, ship.NavigationInfo.WaypointSymbol);
-        
-        // Sell Cargo
+       // Sell Cargo
         Cargo? updatedCargo = null;
+        var totalGained = 0;
         foreach (var cargoItem in ship.Cargo.InventoryItems)
         {
             var sellCargoResponse = await PerformAction(async () => await _shipApiService.SellCargo(ship, cargoItem.Id, cargoItem.Quantity));
             updatedCargo = sellCargoResponse.Cargo;
+            totalGained += sellCargoResponse.Transaction.TotalPrice;
             _logger.LogInformation("{ScriptId}: {ShipId}: sold {Quantity} {Item}(s) for {TotalPrice}", nameof(AdvancedMineAndSell), ship.Id,
                 sellCargoResponse.Transaction.Units, sellCargoResponse.Transaction.TradeSymbol, sellCargoResponse.Transaction.TotalPrice);
         }
+        _mediator.Publish(new SnackBarNotification(ship.Id, $"Sold its inventory for: {totalGained}", Severity.Info));
         if (updatedCargo is not null) ship.Cargo = updatedCargo;
 
         Running = false;
