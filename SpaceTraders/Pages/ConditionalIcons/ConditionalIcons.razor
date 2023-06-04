@@ -2,11 +2,11 @@
 {
     @if (icon.Display)
     {
-        <MudIcon Icon="@icon.Name"/>
+        <MudIcon Icon="@icon.Name" Color="@icon.Color" Size="@icon.Size"/>
     }
     else
     {
-        <MudIcon Icon="@icon.Name" Style="visibility: hidden" Color="@icon.Color" Size="@icon.Size"/>
+        <MudIcon Icon="@icon.Name" Style="visibility: hidden"/>
     }
 }
 
