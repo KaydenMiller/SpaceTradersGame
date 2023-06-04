@@ -52,8 +52,8 @@
     {
         return new Icon[]
         {
-            new (Icons.Material.Filled.Rocket, HasShipYard(locationInfo)),
-            new (Icons.Material.Filled.Storefront, HasMarketPlace(locationInfo)),
+            new (Icons.Material.Filled.Rocket, HasShipYard(locationInfo), "Ship Yard"),
+            new (Icons.Material.Filled.Storefront, HasMarketPlace(locationInfo), "Market Place"),
         };
     }
     private bool HasShipYard(LocationInfo locationInfo)
