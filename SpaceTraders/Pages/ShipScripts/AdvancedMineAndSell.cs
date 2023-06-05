@@ -97,14 +97,14 @@ public class AdvancedMineAndSell : IScript
                 var extraction = await Policy
                    .WrapAsync(
                         SpaceTradersHttpPolicyHelpers.SpaceTradersPolicyAsync(),
-                        SpaceTradersHttpPolicyHelpers.ShipCooldownPolicy() 
-                        // Policy
-                        //    .Handle<SpaceTradersApiException>()
-                        //    .FallbackAsync<ExtractionResponse>(async (_) =>
-                        //     {
-                        //         _logger.LogInformation("{ScriptId}: {ShipId}: Could not extract using survey because it was expired", nameof(AdvancedMineAndSell), ship.Id);
-                        //         return await PerformAction(async () => await _shipApiService.ExtractOre(ship));
-                        //     })
+                        SpaceTradersHttpPolicyHelpers.ShipCooldownPolicy(), 
+                        Policy
+                           .Handle<SpaceTradersApiException>(x => x.ErrorCode == ErrorCodes.SHIP_SURVEY_EXHAUSTED_ERROR)
+                           .RetryAsync(1, (ex, count) =>
+                            {
+                                _logger.LogWarning("{ScriptId}: {ShipId}: Could not extract using survey because it was expired", nameof(AdvancedMineAndSell), ship.Id);
+                                surveyToUse = null;
+                            })
                     )
                    .ExecuteAsync(async () =>
                     {
