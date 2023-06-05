@@ -89,7 +89,9 @@
 
     private void NavigateToLocationDetails(LocationInfo location)
     {
-        NavigationManager.NavigateTo("/location-details/" + location.Symbol);
+        NavigationManager.NavigateTo("/location-details/" + location.Symbol
+            + "?" + "Market=" + this.HasMarketPlace(location) + "&" 
+            + "ShipYard=" + this.HasShipYard(location));
     }
 
 }

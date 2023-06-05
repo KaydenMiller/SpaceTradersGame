@@ -1,13 +1,31 @@
 ﻿@page "/location-details/{SystemSymbol}"
 @using SpaceTraders.Core
 @using SpaceTraders.Pages.Ship
-@using System.Globalization
 @using SpaceTraders.Algorithms
+@using SpaceTraders.Pages.Market
+@using SpaceTraders.Pages.ShipYard
 @inject ShipApiService ShipApiService
 @inject LocationApiService LocationApiService
 
 <MudPaper Elevation="3" Class="ma-2 pa-10">
+   <h4>
+      @SystemSymbol
+   </h4>
+   
+   @if (Market)
+   {
+      <Markets SystemSymbol="@SystemSymbol"/>
+   }
+   
+   @if (ShipYard)
+   {
+      <ShipYards SystemSymbol="@SystemSymbol"/>
+   }
+   
    <MudDataGrid T="Survey" Items="Surveys">
+      <ToolBarContent>
+         <MudText Typo="Typo.h6">Surveys</MudText>
+      </ToolBarContent>
       <Columns>
          <PropertyColumn T="Survey" TProperty="string" Property="s => s.Signature"/>
          <PropertyColumn T="Survey" TProperty="string" Property="s => s.Symbol"/>
@@ -23,6 +41,14 @@
 
    [Parameter]
    public string SystemSymbol { get; set; } = default!;
+
+   [Parameter]
+   [SupplyParameterFromQuery]
+   public bool Market { get; set; }
+
+   [Parameter]
+   [SupplyParameterFromQuery]
+   public bool ShipYard { get; set; }
 
    private SurveyMarketViabilityWeightCalculation _weightCalculation = new();
 

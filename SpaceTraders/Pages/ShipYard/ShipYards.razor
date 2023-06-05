@@ -1,24 +1,20 @@
-﻿@page "/ShipYard/{WaypointString}"
-@using SpaceTraders.Pages.Location
-@inject ShipYardApiService ShipYardApiService;
+﻿@inject ShipYardApiService ShipYardApiService;
 
-@if (WaypointString is not null)
+@if (SystemSymbol is not null)
 {
-    <MudDataGrid T="ShipType" Items="@Ships" SortMode="SortMode.Multiple" Filterable="true">
+    <MudDataGrid T="Ship" Items="@Ships" SortMode="SortMode.Multiple" Filterable="true"
+                 Style="margin-bottom: 20px">
         <ToolBarContent>
-            <MudText Typo="Typo.h6">ShipYard: @(ShipYardDetails?.Symbol.ToString() ?? "Unknown Shipyard Symbol")</MudText>
+            <MudText Typo="Typo.h6">ShipYard</MudText>
             <MudSpacer/>
         </ToolBarContent>
         <Columns>
-            <PropertyColumn T="ShipType" TProperty="string" Property="ship => ship.Type.ToString()" Title="Ship Types"/>
-            <TemplateColumn T="ShipType" CellClass="d-flex" Filterable="false" Sortable="false">
+            <PropertyColumn T="Ship" TProperty="string" Property="ship => ship.Type.ToString()" Title="Ship Types"/>
+            <PropertyColumn T="Ship" TProperty="int" Property="ship => ship.PurchasePrice"/>
+            <TemplateColumn T="Ship" CellClass="d-flex" Filterable="false" Sortable="false">
                 <CellTemplate>
-                    <MudStack Row>
-                        <MudButton Size="Size.Small" Variant="@Variant.Filled" Color="Color.Primary"
-                                   OnClick="@(() => BuyShip(context.Item))">
-                            Buy
-                        </MudButton>
-                    </MudStack>
+                    <MudButton Variant="@Variant.Filled" Color="Color.Primary"
+                                   OnClick="@(() => BuyShip(context.Item))">Buy</MudButton>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
@@ -31,23 +27,23 @@ else
 
 @code {
     [Parameter]
-    public string? WaypointString { get; set; }
+    public string? SystemSymbol { get; set; }
     
     private Core.Location Waypoint { get; set; }
     private ShipYard? ShipYardDetails { get; set; }
-    private IEnumerable<ShipType>? Ships { get; set; }
+    private IEnumerable<Ship>? Ships { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (WaypointString is not null)
+        if (SystemSymbol is not null)
         {
-            this.Waypoint = Core.Location.CreateFromWaypoint(WaypointString);
+            this.Waypoint = Core.Location.CreateFromWaypoint(SystemSymbol);
             ShipYardDetails = await ShipYardApiService.GetShipYard(this.Waypoint);
             Ships = ShipYardDetails.Ships;
         }
     }
 
-    private async void BuyShip(ShipType ship)
+    private async void BuyShip(Ship ship)
     {
         await ShipYardApiService.BuyShip(this.Waypoint, ship.Type);
     }
