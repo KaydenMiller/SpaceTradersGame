@@ -18,7 +18,7 @@ Log.Logger = new LoggerConfiguration()
    .Enrich.FromLogContext()
    .WriteTo.Console()
    .WriteTo.File(
-        path: ".",
+        ".",
         rollingInterval: RollingInterval.Hour,
         fileSizeLimitBytes: 10 * 1024 * 1024,
         retainedFileCountLimit: 2,
@@ -45,11 +45,15 @@ try
 
         settings.AfterCallAsync = async call =>
         {
-            Log.Information("HTTP {Verb} {Url} responded {StatusCode} with body {Body} containing headers {Headers}", call.Request.Verb.Method, call.Request.Url, call.Response.StatusCode, await call.Response.ResponseMessage.Content.ReadAsStringAsync(), call.Response.Headers.Select(x => new
-            {
-                Name = x.Name,
-                Value = x.Value
-            }));
+            Log.Debug("HTTP {Verb} {Url} responded {StatusCode} with body {Body} containing headers {@Headers}",
+                call.Request.Verb.Method,
+                call.Request.Url,
+                call.Response.StatusCode,
+                await call.Response.ResponseMessage.Content.ReadAsStringAsync(),
+                call.Response.Headers.Select(x => new
+                {
+                    x.Name, x.Value
+                }));
         };
     });
 
