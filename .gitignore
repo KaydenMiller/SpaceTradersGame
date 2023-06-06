@@ -1,4 +1,5 @@
 ﻿.local/http-client.env.json
+**/logs
 
 # Common IntelliJ Platform excludes
 

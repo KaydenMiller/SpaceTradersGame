@@ -5,6 +5,7 @@ using Flurl.Http.Configuration;
 using MudBlazor;
 using MudBlazor.Services;
 using Serilog;
+using SpaceTraders.Features.Cargo;
 using SpaceTraders.Pages;
 using SpaceTraders.Pages.Contracts;
 using SpaceTraders.Pages.Location;
@@ -18,7 +19,7 @@ Log.Logger = new LoggerConfiguration()
    .Enrich.FromLogContext()
    .WriteTo.Console()
    .WriteTo.File(
-        ".",
+        "./logs/",
         rollingInterval: RollingInterval.Hour,
         fileSizeLimitBytes: 10 * 1024 * 1024,
         retainedFileCountLimit: 2,
@@ -81,6 +82,8 @@ try
     builder.Services.AddSingleton<ShipYardApiService>();
     builder.Services.AddSingleton<ShipApiService>();
     builder.Services.AddSingleton<MarketApiService>();
+
+    builder.Services.AddSingleton<ShipService>();
 
     builder.Services.AddSingleton<ScriptFactory>();
     builder.Services.AddSingleton<ShipScriptService>();
