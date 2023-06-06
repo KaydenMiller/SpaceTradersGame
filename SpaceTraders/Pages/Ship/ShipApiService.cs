@@ -1,4 +1,5 @@
-﻿using Flurl;
+﻿using System.Diagnostics;
+using Flurl;
 using Flurl.Http;
 using SpaceTraders.Core;
 
@@ -7,12 +8,14 @@ namespace SpaceTraders.Pages.Ship;
 public class ShipApiService
 {
     private readonly SpaceTradersApi _api;
-    
+    private readonly ILogger<ShipApiService> _logger;
+
     public List<Survey> Surveys { get; set; } = new();
 
-    public ShipApiService(SpaceTradersApi api)
+    public ShipApiService(SpaceTradersApi api, ILogger<ShipApiService> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
     public async Task<Core.Ship> GetShipDetail(string shipSymbol)
@@ -152,15 +155,36 @@ public class ShipApiService
            .AppendPathSegment("extract")
            .WithOAuthBearerToken(_api.ApiToken);
 
-        IFlurlResponse response; 
+        IFlurlResponse response;
 
-        if (survey is not null)
+        try
         {
-            response = await request.PostJsonAsync(survey);
+            if (survey is not null)
+            {
+                response = await request.PostJsonAsync(new
+                {
+                    survey
+                });
+            }
+            else
+            {
+                response = await request.PostAsync();
+            }
         }
-        else
+        catch (FlurlHttpException fhe) when (fhe.StatusCode == StatusCodes.Status409Conflict)
         {
-            response = await request.PostAsync();
+            var error = await fhe.GetResponseJsonAsync<SpaceTradersErrorResponse>();
+            switch (error.Error.ErrorCode)
+            {
+                case ErrorCodes.COOLDOWN_CONFLICT_ERROR:
+                    var betterError = await fhe.GetResponseJsonAsync<SpaceTradersErrorResponse<SpaceTradersObjectResponse<ShipCooldown>>>();
+                    throw new SpaceTradersApiException<ShipCooldown>(error.Error.Message, error.Error.ErrorCode, betterError.Error.Data?.Data);
+                case ErrorCodes.UNKNOWN_ERROR:
+                    throw new SpaceTradersApiException("The error we received from the api was not one we know about",
+                        ErrorCodes.UNKNOWN_ERROR);
+                default:
+                    throw new UnreachableException();
+            }
         }
             
         var result = await response.GetJsonAsync<SpaceTradersObjectResponse<ExtractionResponse>>();

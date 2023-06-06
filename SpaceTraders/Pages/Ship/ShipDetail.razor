@@ -35,6 +35,26 @@
             <MudSelectItem Value="@(nameof(AdvancedMineAndSell))"/>
         </MudSelect>
 
+        <div style="margin-top: 10px">
+        <MudButton Color="Color.Primary" 
+                   Variant="Variant.Filled"
+                   OnClick="@(Dock)">Dock</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="@(Orbit)">Orbit</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="@(Refuel)">Refuel</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="@(Extract)">Extract</MudButton>
+            <MudButton Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       OnClick="@(Survey)">Survey</MudButton>
+        </div>
+        
+        <MudDivider Style="margin-top: 10px; margin-bottom: 10px" />
+
         <MudText Typo="Typo.body1">Current System: @CurrentShip.NavigationInfo.SystemSymbol</MudText>
         <MudText Typo="Typo.body1">Current Waypoint: @CurrentShip.NavigationInfo.WaypointSymbol</MudText>
         <MudText Typo="Typo.body1">
@@ -48,13 +68,35 @@
                 <MudListItem>Ship Flight Mode: @(CurrentShip.NavigationInfo.FlightMode.ToString())</MudListItem>
                 <MudListItem>Frame: @CurrentShip.Frame.Name</MudListItem>
                 <MudListItem>Description: @CurrentShip.Frame.Description</MudListItem>
-                <MudListItem>Condition: @CurrentShip.Frame.Condition</MudListItem>
                 <MudListItem>Module Slots: @CurrentShip.Frame.ModuleSlots</MudListItem>
                 <MudListItem>Mounting Points: @CurrentShip.Frame.MountingPoints</MudListItem>
-                <MudListItem>Fuel Capacity: @CurrentShip.Frame.FuelCapacity</MudListItem>
-                <MudListItem>Fuel Total: @CurrentShip.Fuel.Current</MudListItem>
-                <MudListItem>Inventory Capacity: @CurrentShip.Cargo.Capacity</MudListItem>
-                <MudListItem>Inventory Stored: @CurrentShip.Cargo.TotalUnits</MudListItem>
+                <MudListItem Icon="@Icons.Material.Filled.HealthAndSafety" Title="Condition">
+                    <MudProgressLinear Style="width: 20%; height: 18px"
+                                       Color="Color.Info" Size="Size.Large"
+                                       Value="@CurrentShip.Frame.Condition" Max="100">
+                        <MudText Typo="Typo.subtitle1" Color="Color.Default">
+                            @CurrentShip.Frame.Condition / 100
+                        </MudText>
+                    </MudProgressLinear>
+                </MudListItem>
+                <MudListItem Icon="@Icons.Material.Filled.LocalGasStation" Title="Fuel">
+                    <MudProgressLinear Style="width: 20%; height: 18px"
+                                       Color="Color.Info" Size="Size.Large"
+                                       Value="@CurrentShip.Fuel.Current" Max="CurrentShip.Fuel.Capacity">
+                        <MudText Typo="Typo.subtitle1" Color="Color.Default">
+                            @CurrentShip.Fuel.Current / @CurrentShip.Fuel.Capacity
+                        </MudText>
+                    </MudProgressLinear>
+                </MudListItem>
+                <MudListItem Icon="@Icons.Material.Filled.Inventory" Title="Inventory">
+                    <MudProgressLinear Style="width: 20%; height: 18px"
+                                       Color="Color.Info" Size="Size.Large"
+                                       Value="@CurrentShip.Cargo.TotalUnits" Max="CurrentShip.Cargo.Capacity">
+                        <MudText Typo="Typo.subtitle1" Color="Color.Default">
+                            @CurrentShip.Cargo.TotalUnits / @CurrentShip.Cargo.Capacity
+                        </MudText>
+                    </MudProgressLinear>
+                </MudListItem>
             </MudList>
         </MudText>
        
@@ -81,6 +123,8 @@
 
     [Parameter]
     public string ShipSymbol { get; set; } = default!;
+    
+    public Ship ActiveShip { get; set; } = default!;
 
     private string? ActiveShipScript { get; set; }
 
@@ -91,6 +135,7 @@
     protected override async Task OnInitializedAsync()
     {
         await UpdateCurrentShipInfo();
+        ActiveShip = CurrentShip;
     }
 
     private async Task UpdateCurrentShipInfo()
@@ -107,5 +152,31 @@
         if (CurrentShip is null) throw new NullReferenceException("Cannot Register Ship that is Null");
         ShipScriptService.RegisterShip(CurrentShip!, selectedValues.First());
     }
+    
+    private async Task Dock()
+    {
+        var response = await ShipApiService.DockCurrent(ActiveShip);
+    }
+    
+    private async Task Refuel()
+    {
+        var response = await ShipApiService.Refuel(ActiveShip);
+    }
+
+    private async Task Orbit()
+    {
+        var response = await ShipApiService.OrbitCurrent(ActiveShip);
+    }
+
+    private async Task Extract()
+    {
+        var response = await ShipApiService.ExtractOre(ActiveShip);
+    }
+    
+    private async Task Survey()
+    {
+        var response = await ShipApiService.Survey(ActiveShip);
+    }
+
 
 }

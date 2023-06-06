@@ -1,0 +1,16 @@
+﻿@foreach (var icon in IconsToDisplay)
+{
+    @if (icon.Display)
+    {
+        <MudIcon Icon="@icon.Name" Color="@icon.Color" Size="@icon.Size" Title="@icon.Title"/>
+    }
+    else
+    {
+        <MudIcon Icon="@icon.Name" Style="visibility: hidden"/>
+    }
+}
+
+@code {
+    [Parameter] 
+    public IEnumerable<Icon> IconsToDisplay { get; set; }
+}

@@ -1,5 +1,6 @@
 ﻿@using SpaceTraders.Pages.Location
 @using SpaceTraders.Core
+@using SpaceTraders.Pages.ConditionalIcons
 @inject ShipApiService ShipApiService
 
 <MudPaper Elevation="3" Class="ma-2 pa-10">
@@ -10,30 +11,17 @@
         <Columns>
             <PropertyColumn T="LocationInfo" TProperty="string" Property="l => l.Symbol.ToString()"/>
             <PropertyColumn T="LocationInfo" TProperty="string" Property="l => l.Type.ToString()"/>
-            <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => HasShipYard(l)" Title="Ship Yard" />
-            <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => HasMarketPlace(l)" Title="Market Place" />
-            <PropertyColumn T="LocationInfo" TProperty="bool" Property="l => ShipHere(l)" Title="Ship Here"></PropertyColumn>
+            <TemplateColumn T="LocationInfo" Title="Info">
+                <CellTemplate>
+                    <ConditionalIcons IconsToDisplay="BuildIconList(context.Item)"/>
+                </CellTemplate>
+            </TemplateColumn>
             <TemplateColumn T="LocationInfo">
                 <CellTemplate>
                     <MudStack Row>
                         <MudButton Color="Color.Primary" 
                                    Variant="Variant.Filled"
                                    OnClick="@(() => Navigate(context.Item.Symbol))">Navigate</MudButton>
-                        <MudButton Color="Color.Primary" 
-                                   Variant="Variant.Filled"
-                                   OnClick="@(Dock)">Dock</MudButton>
-                        <MudButton Color="Color.Primary"
-                                   Variant="Variant.Filled"
-                                   OnClick="@(Orbit)">Orbit</MudButton>
-                        <MudButton Color="Color.Primary"
-                                   Variant="Variant.Filled"
-                                   OnClick="@(Refuel)">Refuel</MudButton>
-                        <MudButton Color="Color.Primary"
-                                   Variant="Variant.Filled"
-                                   OnClick="@(Extract)">Extract</MudButton>
-                        <MudButton Color="Color.Primary"
-                                   Variant="Variant.Filled"
-                                   OnClick="@(Survey)">Survey</MudButton>
                     </MudStack>
                 </CellTemplate>
             </TemplateColumn>
@@ -42,6 +30,12 @@
 </MudPaper>
 
 @code {
+    
+    /*
+     * Ship Yard: warehouse
+     * market place: store front / store 
+     * ship here: MyLocation / locationpin
+     */
 
      [Parameter]
      public IEnumerable<LocationInfo> NearbyLocations { get; set; } = Enumerable.Empty<LocationInfo>();
@@ -49,29 +43,24 @@
     [Parameter]
     public Ship ActiveShip { get; set; } = default!;
 
+    // public static IEnumerable<ConditionIcons> icons = new ConditionIcons[]
+    // {
+    //     new ConditionIcons(@Icons.Material.Filled.Warehouse, HasShipYard())
+    // };
+
+    private IEnumerable<Icon> BuildIconList(LocationInfo locationInfo)
+    {
+        return new Icon[]
+        {
+            new (Icons.Material.Filled.Rocket, HasShipYard(locationInfo), "Ship Yard"),
+            new (Icons.Material.Filled.Storefront, HasMarketPlace(locationInfo), "Market Place"),
+            new (Icons.Material.Filled.MyLocation, ShipHere(locationInfo), "Ship Location")
+        };
+    }
+
     private async Task Navigate(Core.Location waypoint)
     {
         var response = await ShipApiService.Navigate(ActiveShip, waypoint);
-    }
-
-    private async Task Dock()
-    {
-        var response = await ShipApiService.DockCurrent(ActiveShip);
-    }
-    
-    private async Task Refuel()
-    {
-        var response = await ShipApiService.Refuel(ActiveShip);
-    }
-
-    private async Task Orbit()
-    {
-        var response = await ShipApiService.OrbitCurrent(ActiveShip);
-    }
-
-    private async Task Extract()
-    {
-        var response = await ShipApiService.ExtractOre(ActiveShip);
     }
     
     private bool HasShipYard(LocationInfo locationInfo)
@@ -88,10 +77,4 @@
     {
         return this.ActiveShip.NavigationInfo.WaypointSymbol.ToString() == location.Symbol.ToString();
     }
-
-    private async Task Survey()
-    {
-        var response = await ShipApiService.Survey(ActiveShip);
-    }
-
 }

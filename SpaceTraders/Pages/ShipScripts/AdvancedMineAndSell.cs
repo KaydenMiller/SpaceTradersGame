@@ -1,8 +1,11 @@
 ﻿using System.Collections.Immutable;
-using System.Security.Cryptography.X509Certificates;
+using Flurl.Http;
 using MediatR;
 using MudBlazor;
+using Polly;
+using SpaceTraders.Algorithms;
 using SpaceTraders.Core;
+using SpaceTraders.HttpPolicies;
 using SpaceTraders.Pages.Location;
 using SpaceTraders.Pages.Notification;
 using SpaceTraders.Pages.Ship;
@@ -15,6 +18,7 @@ public class AdvancedMineAndSell : IScript
     private readonly LocationApiService _locationApiService;
     private readonly ILogger<AdvancedMineAndSell> _logger;
     private readonly IMediator _mediator;
+
     public string Name { get; } = nameof(AdvancedMineAndSell);
     public bool Running { get; private set; }
 
@@ -46,7 +50,7 @@ public class AdvancedMineAndSell : IScript
 
         // Get local trade goods
         TradeGoods = (await PerformAction(async () => await _locationApiService.GetMarketPlace(ship.NavigationInfo.WaypointSymbol,
-                ship.NavigationInfo.WaypointSymbol))).TradeGoods;
+                ship.NavigationInfo.WaypointSymbol))).TradeGoods.ToList();
         _logger.LogInformation("{ScriptId}: {ShipId}: getting marketplace data", nameof(AdvancedMineAndSell), ship.Id);
         
         // What is the best good to be mining
@@ -68,22 +72,58 @@ public class AdvancedMineAndSell : IScript
         var waitTime = (await PerformAction(async () => await _shipApiService.GetShipCooldown(ship)))
             ?.GetWaitTime();
 
-        var surveyToUse = GetBestSurvey(goodsToKeep);
-        if (surveyToUse is not null)
-            _logger.LogInformation("{ScriptId}: {ShipId}: Using survey {Signature}; {Items}", nameof(AdvancedMineAndSell), ship.Id, surveyToUse.Signature, surveyToUse.OreDeposits.Select(x => x.Deposit));
-        else 
-            _logger.LogInformation("{ScriptId}: {ShipId}: No survey found", nameof(AdvancedMineAndSell), ship.Id);
+        var surveyAlgorithm = new SurveyMarketViabilityWeightCalculation();
         
         do
         {
-            await Task.Delay(waitTime ?? TimeSpan.Zero);
-            var extraction = await PerformAction(async () => await _shipApiService.ExtractOre(ship, surveyToUse ?? null));
-            this._mediator.Publish(new SnackBarNotification(extraction.Extraction.ShipSymbol,
-                $"Mined: {extraction.Extraction.Yield.Units} {extraction.Extraction.Yield.Symbol}", Severity.Info));
-            ship.Cargo = extraction.Cargo;
-            waitTime = extraction.Cooldown.GetWaitTime();
-            _logger.LogInformation("{ScriptId}: {ShipId}: Extracted {Quantity} of {Name}", nameof(AdvancedMineAndSell), extraction.Extraction.ShipSymbol, extraction.Extraction.Yield.Units, extraction.Extraction.Yield.Symbol);
+            var weightedSurveys = surveyAlgorithm.Calculate(_shipApiService.Surveys, TradeGoods).ToList();
+            _logger.LogInformation("{ScriptId}: {ShipId}: Weighted Surveys {WeightedSurveys}", nameof(AdvancedMineAndSell), ship.Id, weightedSurveys);
+            _logger.LogInformation("{ScriptId}: {ShipId}: Market Prices {@MarketPrices}", nameof(AdvancedMineAndSell), ship.Id, TradeGoods.Select(x => new { Id = x.Id, SellFor = x.SellPrice }));
+            var surveyToUse = weightedSurveys.MaxBy(s => s.Weight)?.Survey;
+            if (surveyToUse is not null)
+            {
+                _logger.LogInformation("{ScriptId}: {ShipId}: Using survey {Signature}; {Items}",
+                    nameof(AdvancedMineAndSell), ship.Id, surveyToUse.Signature,
+                    surveyToUse.OreDeposits.Select(x => x.Deposit));
+                _logger.LogInformation("{ScriptId}: {ShipId}: {SurveyId}: {SurveyExpiration}",
+                    nameof(AdvancedMineAndSell), ship.Id, surveyToUse.Signature, surveyToUse.Expiration.ToLocalTime().ToString("g"));
+            }
+            else 
+                _logger.LogInformation("{ScriptId}: {ShipId}: No survey found", nameof(AdvancedMineAndSell), ship.Id);
             
+            await Task.Delay(waitTime ?? TimeSpan.Zero);
+            try
+            {
+                var extraction = await Policy
+                   .WrapAsync(
+                        SpaceTradersHttpPolicyHelpers.SpaceTradersPolicyAsync(),
+                        SpaceTradersHttpPolicyHelpers.ShipCooldownPolicy(), 
+                        Policy
+                           .Handle<SpaceTradersApiException>(x => x.ErrorCode == ErrorCodes.SHIP_SURVEY_EXHAUSTED_ERROR)
+                           .RetryAsync(1, (ex, count) =>
+                            {
+                                _logger.LogWarning("{ScriptId}: {ShipId}: Could not extract using survey because it was expired", nameof(AdvancedMineAndSell), ship.Id);
+                                surveyToUse = null;
+                            })
+                    )
+                   .ExecuteAsync(async () =>
+                    {
+                        return await PerformAction(async () => await _shipApiService.ExtractOre(ship, surveyToUse ?? null)); 
+                    });
+
+                ship.Cargo = extraction.Cargo;
+                waitTime = extraction.Cooldown.GetWaitTime();
+                _logger.LogInformation("{ScriptId}: {ShipId}: Extracted {Quantity} of {Name}", nameof(AdvancedMineAndSell), extraction.Extraction.ShipSymbol, extraction.Extraction.Yield.Units, extraction.Extraction.Yield.Symbol);
+                _mediator.Publish(new SnackBarNotification(ship.Id,
+                    $"Extracted {extraction.Extraction.Yield.Units} of {extraction.Extraction.Yield.Symbol}",
+                    Severity.Normal));
+            }
+            catch (FlurlHttpException fhe)
+            {
+                var data = await fhe.GetResponseStringAsync();
+                _logger.LogError("Flurl received an error, {StatusCode}; {Data}", fhe.StatusCode, data);
+            }
+
             // Clean out bad cargo to save on request time
             await JettisonAndUpdateCargo(ship, goodsToKeep);
         } while (ship.Cargo.TotalUnits < ship.Cargo.Capacity);
@@ -93,39 +133,21 @@ public class AdvancedMineAndSell : IScript
         ship.NavigationInfo = (await PerformAction(async () => await _shipApiService.GetShipDetail(ship.Id)))
            .NavigationInfo;
         _logger.LogInformation("{ScriptId}: {ShipId}: Docked Ship at {Waypoint}", nameof(AdvancedMineAndSell), ship.Id, ship.NavigationInfo.WaypointSymbol);
-        
-        // Sell Cargo
+       // Sell Cargo
         Cargo? updatedCargo = null;
+        var totalGained = 0;
         foreach (var cargoItem in ship.Cargo.InventoryItems)
         {
             var sellCargoResponse = await PerformAction(async () => await _shipApiService.SellCargo(ship, cargoItem.Id, cargoItem.Quantity));
             updatedCargo = sellCargoResponse.Cargo;
+            totalGained += sellCargoResponse.Transaction.TotalPrice;
             _logger.LogInformation("{ScriptId}: {ShipId}: sold {Quantity} {Item}(s) for {TotalPrice}", nameof(AdvancedMineAndSell), ship.Id,
                 sellCargoResponse.Transaction.Units, sellCargoResponse.Transaction.TradeSymbol, sellCargoResponse.Transaction.TotalPrice);
         }
+        _mediator.Publish(new SnackBarNotification(ship.Id, $"Sold its inventory for: {totalGained}", Severity.Info));
         if (updatedCargo is not null) ship.Cargo = updatedCargo;
 
         Running = false;
-    }
-
-    private Survey? GetBestSurvey(ImmutableArray<string> goodsToMine)
-    {
-        var surveys = _shipApiService.Surveys.ToImmutableArray();
-        var surveysThatContainGoodDeposits = surveys
-           .Where(s => s.OreDeposits
-               .Select(od => od.Deposit)
-               .Any(od => goodsToMine.Contains(od.ToString())));
-        var bestSurvey = surveysThatContainGoodDeposits
-           .Select(s =>
-            {
-                var countOfGoodOres = s.OreDeposits.Count(x => goodsToMine.Contains(x.Deposit.ToString()));
-                return new
-                {
-                    Survey = s,
-                    CountOfGoodOres = countOfGoodOres
-                };
-            }).MaxBy(x => x.CountOfGoodOres)?.Survey;
-        return bestSurvey;
     }
 
     private async Task JettisonAndUpdateCargo(Core.Ship ship, ImmutableArray<string> goodsToKeep)
