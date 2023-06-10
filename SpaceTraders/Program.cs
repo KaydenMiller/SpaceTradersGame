@@ -5,6 +5,14 @@ using Flurl.Http.Configuration;
 using MudBlazor;
 using MudBlazor.Services;
 using Serilog;
+using SpaceTraders.Api;
+using SpaceTraders.Api.Contracts;
+using SpaceTraders.Api.Locations;
+using SpaceTraders.Api.Markets;
+using SpaceTraders.Api.Players;
+using SpaceTraders.Api.Ships;
+using SpaceTraders.Api.Shipyards;
+using SpaceTraders.Core;
 using SpaceTraders.Features.Cargo;
 using SpaceTraders.Pages;
 using SpaceTraders.Pages.Contracts;
@@ -74,14 +82,9 @@ try
         options.SerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
     });
 
+    builder.Services.AddSpaceTradersApi();
+
     builder.Services.AddSingleton<LoggerFactory>();
-    builder.Services.AddSingleton<SpaceTradersApi>();
-    builder.Services.AddSingleton<ContractApiService>();
-    builder.Services.AddSingleton<PlayerApiService>();
-    builder.Services.AddSingleton<LocationApiService>();
-    builder.Services.AddSingleton<ShipYardApiService>();
-    builder.Services.AddSingleton<ShipApiService>();
-    builder.Services.AddSingleton<MarketApiService>();
 
     builder.Services.AddSingleton<ShipService>();
 

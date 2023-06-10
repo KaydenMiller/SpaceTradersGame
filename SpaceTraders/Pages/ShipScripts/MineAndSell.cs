@@ -1,4 +1,5 @@
-﻿using SpaceTraders.Pages.Ship;
+﻿using SpaceTraders.Api.Ships;
+using SpaceTraders.Pages.Ship;
 
 namespace SpaceTraders.Pages.ShipScripts;
 

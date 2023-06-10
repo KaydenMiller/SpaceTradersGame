@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using SpaceTraders.Core;
 
-namespace SpaceTraders.Pages.Ship;
+namespace SpaceTraders.Api.Ships;
 
 public class SurveyResponse
 {

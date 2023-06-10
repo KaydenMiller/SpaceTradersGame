@@ -1,14 +1,12 @@
 ﻿using System.Text.Json.Serialization;
-using SpaceTraders.Core;
-using SpaceTraders.Pages.Location;
 
-namespace SpaceTraders.Pages.ShipYard;
+namespace SpaceTraders.Core;
 
 public class ShipYard
 {
     [JsonPropertyName("symbol")]
     [JsonConverter(typeof(LocationJsonConverter))]
-    public Core.Location Symbol { get; set; }
+    public Location Symbol { get; set; }
 
     [JsonPropertyName("shipTypes")]
     public IEnumerable<ShipType> ShipTypes { get; set; }
@@ -42,19 +40,4 @@ public class ShipTransaction
     
     [JsonPropertyName("timestamp")]
     public DateTime Timestamp { get; set; }
-}
-
-public class Ship
-{
-    [JsonPropertyName("type")]
-    public ShipTypes Type { get; set; }
-    
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-
-    [JsonPropertyName("description")]
-    public string Description { get; set; }
-
-    [JsonPropertyName("purchasePrice")]
-    public int PurchasePrice { get; set; }
 }

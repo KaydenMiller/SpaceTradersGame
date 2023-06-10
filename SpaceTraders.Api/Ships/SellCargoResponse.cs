@@ -1,15 +1,15 @@
 ﻿using System.Text.Json.Serialization;
 using SpaceTraders.Core;
 
-namespace SpaceTraders.Pages.Ship;
+namespace SpaceTraders.Api.Ships;
 
-public class RefuelShipResponse
+public class SellCargoResponse
 {
     [JsonPropertyName("agent")]
-    public Player.Player Player { get; set; }
+    public Core.Player Player { get; set; }
 
-    [JsonPropertyName("fuel")]
-    public Fuel Fuel { get; set; }
+    [JsonPropertyName("cargo")]
+    public Cargo Cargo { get; set; }
 
     [JsonPropertyName("transaction")]
     public TradeTransaction Transaction { get; set; }

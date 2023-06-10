@@ -1,4 +1,7 @@
-﻿@inject ShipYardApiService ShipYardApiService;
+﻿@using SpaceTraders.Core
+@using SpaceTraders.Api
+@using SpaceTraders.Api.Shipyards
+@inject ShipYardApiService ShipYardApiService;
 
 @if (SystemSymbol is not null)
 {
@@ -9,9 +12,9 @@
             <MudSpacer/>
         </ToolBarContent>
         <Columns>
-            <PropertyColumn T="Ship" TProperty="string" Property="ship => ship.Type.ToString()" Title="Ship Types"/>
-            <PropertyColumn T="Ship" TProperty="int" Property="ship => ship.PurchasePrice"/>
-            <TemplateColumn T="Ship" CellClass="d-flex" Filterable="false" Sortable="false">
+            <PropertyColumn T="ShipYardShip" TProperty="string" Property="ship => ship.Type.ToString()" Title="Ship Types"/>
+            <PropertyColumn T="ShipYardShip" TProperty="int" Property="ship => ship.PurchasePrice"/>
+            <TemplateColumn T="ShipYardShip" CellClass="d-flex" Filterable="false" Sortable="false">
                 <CellTemplate>
                     <MudButton Variant="@Variant.Filled" Color="Color.Primary"
                                    OnClick="@(() => BuyShip(context.Item))">Buy</MudButton>
@@ -43,7 +46,7 @@ else
         }
     }
 
-    private async void BuyShip(Ship ship)
+    private async void BuyShip(ShipYardShip ship)
     {
         await ShipYardApiService.BuyShip(this.Waypoint, ship.Type);
     }

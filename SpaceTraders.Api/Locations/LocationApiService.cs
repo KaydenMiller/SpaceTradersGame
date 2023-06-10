@@ -2,7 +2,7 @@
 using Flurl.Http;
 using SpaceTraders.Core;
 
-namespace SpaceTraders.Pages.Location;
+namespace SpaceTraders.Api.Locations;
 
 public class LocationApiService
 {

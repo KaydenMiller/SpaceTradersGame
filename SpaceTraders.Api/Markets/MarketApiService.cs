@@ -1,7 +1,7 @@
 ﻿using Flurl;
 using Flurl.Http;
 
-namespace SpaceTraders.Pages.Market;
+namespace SpaceTraders.Api.Markets;
 
 public class MarketApiService
 {

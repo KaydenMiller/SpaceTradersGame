@@ -1,6 +1,8 @@
 ﻿@page "/dashboard"
 @using SpaceTraders.Pages.Ship
 @using SpaceTraders.Pages.Player
+@using SpaceTraders.Api.Players
+@using SpaceTraders.Api.Ships
 @inject ShipApiService ShipApiService
 @inject PlayerApiService PlayerApiService
 
@@ -15,7 +17,7 @@
 
 @code {
     private IEnumerable<Core.Ship> OwnedShips { get; set; } = Enumerable.Empty<Core.Ship>();
-    private Player.Player? PlayerDetails { get; set; }
+    private Core.Player? PlayerDetails { get; set; }
     protected override async Task OnInitializedAsync()
     {
         OwnedShips = await ShipApiService.GetOwnedShips();

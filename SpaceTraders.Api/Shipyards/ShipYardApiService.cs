@@ -2,7 +2,7 @@
 using Flurl.Http;
 using SpaceTraders.Core;
 
-namespace SpaceTraders.Pages.ShipYard;
+namespace SpaceTraders.Api.Shipyards;
 
 public class ShipYardApiService
 {
@@ -13,12 +13,12 @@ public class ShipYardApiService
         _api = api;
     }
 
-    public async Task<ShipYard> GetShipYard(Core.Location location)
+    public async Task<Core.ShipYard> GetShipYard(Core.Location location)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegments("systems", location.System, "waypoints", location.Waypoint, "shipyard")
            .WithOAuthBearerToken(_api.ApiToken)
-           .GetJsonAsync<SpaceTradersObjectResponse<ShipYard>>();
+           .GetJsonAsync<SpaceTradersObjectResponse<Core.ShipYard>>();
 
         return response.Data;
     }

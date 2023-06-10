@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SpaceTraders.Pages;
+namespace SpaceTraders.Api;
 
 public class SpaceTradersArrayResponse<TData>
     where TData : class

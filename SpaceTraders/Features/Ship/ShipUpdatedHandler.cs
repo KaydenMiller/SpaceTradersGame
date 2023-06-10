@@ -17,5 +17,6 @@ public class ShipUpdatedHandler : INotificationHandler<ShipUpdated>
     public Task Handle(ShipUpdated notification, CancellationToken cancellationToken)
     {
         _shipService.AddShip(notification.Ship);
+        return Task.CompletedTask;
     }
 }

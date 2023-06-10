@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
 using Flurl;
 using Flurl.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using SpaceTraders.Core;
 
-namespace SpaceTraders.Pages.Ship;
+namespace SpaceTraders.Api.Ships;
 
 public class ShipApiService
 {
@@ -18,30 +20,30 @@ public class ShipApiService
         _logger = logger;
     }
 
-    public async Task<Core.Ship> GetShipDetail(string shipSymbol)
+    public async Task<Ship> GetShipDetail(string shipSymbol)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
            .AppendPathSegment("ships")
            .AppendPathSegment(shipSymbol)
            .WithOAuthBearerToken(_api.ApiToken)
-           .GetJsonAsync<SpaceTradersObjectResponse<Core.Ship>>();
+           .GetJsonAsync<SpaceTradersObjectResponse<Ship>>();
 
         return response.Data;
     }
 
-    public async Task<IEnumerable<Core.Ship>> GetOwnedShips()
+    public async Task<IEnumerable<Ship>> GetOwnedShips()
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
            .AppendPathSegment("ships")
            .WithOAuthBearerToken(_api.ApiToken)
-           .GetJsonAsync<SpaceTradersArrayResponse<Core.Ship>>();
+           .GetJsonAsync<SpaceTradersArrayResponse<Ship>>();
 
         return response.Data; 
     }
 
-    public async Task<NavigateShipResponse> Navigate(Core.Ship ship, Core.Location waypoint)
+    public async Task<NavigateShipResponse> Navigate(Ship ship, Location waypoint)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -57,7 +59,7 @@ public class ShipApiService
         return (await response.GetJsonAsync<SpaceTradersObjectResponse<NavigateShipResponse>>()).Data;
     }
 
-    public async Task<Cargo> GetShipCargo(Core.Ship ship)
+    public async Task<Cargo> GetShipCargo(Ship ship)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -70,7 +72,7 @@ public class ShipApiService
         return response.Data;
     }
 
-    public async Task<NavigationInfo> OrbitCurrent(Core.Ship ship)
+    public async Task<NavigationInfo> OrbitCurrent(Ship ship)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -85,7 +87,7 @@ public class ShipApiService
         return result.Data;
     }
 
-    public async Task<NavigationInfo> DockCurrent(Core.Ship ship)
+    public async Task<NavigationInfo> DockCurrent(Ship ship)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -100,7 +102,7 @@ public class ShipApiService
         return result.Data;
     }
 
-    public async Task<RefuelShipResponse> Refuel(Core.Ship ship)
+    public async Task<RefuelShipResponse> Refuel(Ship ship)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -115,7 +117,7 @@ public class ShipApiService
         return result.Data;  
     }
 
-    public async Task<ShipCooldown?> GetShipCooldown(Core.Ship ship)
+    public async Task<ShipCooldown?> GetShipCooldown(Ship ship)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -128,7 +130,7 @@ public class ShipApiService
         return response?.Data;
     }
 
-    public async Task<WarpShipResponse> Warp(Core.Ship ship, Core.Location waypoint)
+    public async Task<WarpShipResponse> Warp(Ship ship, Location waypoint)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -146,7 +148,7 @@ public class ShipApiService
         return result.Data;
     }
 
-    public async Task<ExtractionResponse> ExtractOre(Core.Ship ship, Survey? survey = null)
+    public async Task<ExtractionResponse> ExtractOre(Ship ship, Survey? survey = null)
     {
         var request = SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -191,7 +193,7 @@ public class ShipApiService
         return result.Data;
     }
 
-    public async Task<SellCargoResponse> SellCargo(Core.Ship ship, string cargoSymbol, int unitsToSell)
+    public async Task<SellCargoResponse> SellCargo(Ship ship, string cargoSymbol, int unitsToSell)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -210,7 +212,7 @@ public class ShipApiService
         return result.Data;
     }
 
-    public async Task<SurveyResponse> Survey(Core.Ship ship)
+    public async Task<SurveyResponse> Survey(Ship ship)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
@@ -227,7 +229,7 @@ public class ShipApiService
         return result.Data; 
     }
 
-    public async Task<Cargo> JettisonCargo(Core.Ship ship, string cargoSymbol, int quantityToJettison)
+    public async Task<Cargo> JettisonCargo(Ship ship, string cargoSymbol, int quantityToJettison)
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")

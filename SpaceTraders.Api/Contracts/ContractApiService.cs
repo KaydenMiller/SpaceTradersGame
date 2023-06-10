@@ -1,8 +1,9 @@
 ﻿using Flurl;
 using Flurl.Http;
+using Microsoft.Extensions.Configuration;
 using SpaceTraders.Core;
 
-namespace SpaceTraders.Pages.Contracts;
+namespace SpaceTraders.Api.Contracts;
 
 public class ContractApiService
 {

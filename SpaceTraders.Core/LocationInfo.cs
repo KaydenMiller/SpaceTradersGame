@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using SpaceTraders.Core;
 
-namespace SpaceTraders.Pages.Location;
+namespace SpaceTraders.Core;
 
 public class LocationInfo
 {

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using SpaceTraders.Core;
 
-namespace SpaceTraders.Pages.Contracts;
+namespace SpaceTraders.Api.Contracts;
 
 public class DeliverContractResponse
 {

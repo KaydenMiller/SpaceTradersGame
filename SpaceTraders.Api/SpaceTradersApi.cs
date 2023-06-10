@@ -1,4 +1,6 @@
-﻿namespace SpaceTraders.Pages;
+﻿using Microsoft.Extensions.Configuration;
+
+namespace SpaceTraders.Api;
 
 public class SpaceTradersApi
 {

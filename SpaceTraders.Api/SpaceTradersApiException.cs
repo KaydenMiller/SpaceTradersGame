@@ -1,6 +1,6 @@
 ﻿using SpaceTraders.Core;
 
-namespace SpaceTraders.Pages;
+namespace SpaceTraders.Api;
 
 public class SpaceTradersApiException : Exception
 {

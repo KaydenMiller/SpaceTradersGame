@@ -1,7 +1,7 @@
 ﻿using Flurl;
 using Flurl.Http;
 
-namespace SpaceTraders.Pages.Player;
+namespace SpaceTraders.Api.Players;
 
 public class PlayerApiService
 {
@@ -12,13 +12,13 @@ public class PlayerApiService
         _api = api;
     }
 
-    public async Task<Player> GetPlayer()
+    public async Task<Core.Player> GetPlayer()
     {
         var response = await SpaceTradersApi.API_ROOT
            .AppendPathSegment("my")
            .AppendPathSegment("agent")
            .WithOAuthBearerToken(_api.ApiToken)
-           .GetJsonAsync<SpaceTradersObjectResponse<Player>>();
+           .GetJsonAsync<SpaceTradersObjectResponse<Core.Player>>();
 
         return response.Data;
     }
