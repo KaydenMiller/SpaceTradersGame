@@ -5,7 +5,7 @@
 
 @if (SystemSymbol is not null)
 {
-    <MudDataGrid T="Ship" Items="@Ships" SortMode="SortMode.Multiple" Filterable="true"
+    <MudDataGrid T="ShipYardShip" Items="@Ships" SortMode="SortMode.Multiple" Filterable="true"
                  Style="margin-bottom: 20px">
         <ToolBarContent>
             <MudText Typo="Typo.h6">ShipYard</MudText>
@@ -34,7 +34,7 @@ else
     
     private Core.Location Waypoint { get; set; }
     private ShipYard? ShipYardDetails { get; set; }
-    private IEnumerable<Ship>? Ships { get; set; }
+    private IEnumerable<ShipYardShip>? Ships { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

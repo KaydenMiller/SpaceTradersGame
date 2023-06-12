@@ -15,7 +15,7 @@ public class ShipYard
     public IEnumerable<ShipTransaction> Transactions { get; set; }
 
     [JsonPropertyName("ships")]
-    public IEnumerable<Ship> Ships { get; set; }
+    public IEnumerable<ShipYardShip> Ships { get; set; }
 }
 
 public class ShipType

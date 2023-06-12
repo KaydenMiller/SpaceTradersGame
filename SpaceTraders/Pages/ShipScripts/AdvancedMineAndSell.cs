@@ -8,10 +8,9 @@ using SpaceTraders.Api;
 using SpaceTraders.Api.Locations;
 using SpaceTraders.Api.Ships;
 using SpaceTraders.Core;
+using SpaceTraders.Features.Ship;
 using SpaceTraders.HttpPolicies;
-using SpaceTraders.Pages.Location;
 using SpaceTraders.Pages.Notification;
-using SpaceTraders.Pages.Ship;
 
 namespace SpaceTraders.Pages.ShipScripts;
 
@@ -120,6 +119,8 @@ public class AdvancedMineAndSell : IScript
                 _mediator.Publish(new SnackBarNotification(ship.Id,
                     $"Extracted {extraction.Extraction.Yield.Units} of {extraction.Extraction.Yield.Symbol}",
                     Severity.Normal));
+                _mediator.Publish(CargoHoldUpdated.FromShipCargo(ship.Id, ship.NavigationInfo.WaypointSymbol,
+                    ship.Cargo));
             }
             catch (FlurlHttpException fhe)
             {
