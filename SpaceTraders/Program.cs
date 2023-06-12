@@ -6,22 +6,9 @@ using MudBlazor;
 using MudBlazor.Services;
 using Serilog;
 using SpaceTraders.Api;
-using SpaceTraders.Api.Contracts;
-using SpaceTraders.Api.Locations;
-using SpaceTraders.Api.Markets;
-using SpaceTraders.Api.Players;
-using SpaceTraders.Api.Ships;
-using SpaceTraders.Api.Shipyards;
 using SpaceTraders.Core;
 using SpaceTraders.Features.Cargo;
-using SpaceTraders.Pages;
-using SpaceTraders.Pages.Contracts;
-using SpaceTraders.Pages.Location;
-using SpaceTraders.Pages.Market;
-using SpaceTraders.Pages.Player;
-using SpaceTraders.Pages.Ship;
 using SpaceTraders.Pages.ShipScripts;
-using SpaceTraders.Pages.ShipYard;
 
 Log.Logger = new LoggerConfiguration()
    .Enrich.FromLogContext()

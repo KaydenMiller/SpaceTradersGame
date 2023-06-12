@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTraders.Tests.Unit", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTraders.Api", "SpaceTraders.Api\SpaceTraders.Api.csproj", "{A3D147A4-D751-45B6-968A-960D166ADA89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceTraders.Api.Tests.Unit", "SpaceTraders.Api.Tests.Unit\SpaceTraders.Api.Tests.Unit.csproj", "{54FBA5FE-5505-41FA-A4F6-326CA348E593}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{A3D147A4-D751-45B6-968A-960D166ADA89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3D147A4-D751-45B6-968A-960D166ADA89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3D147A4-D751-45B6-968A-960D166ADA89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54FBA5FE-5505-41FA-A4F6-326CA348E593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54FBA5FE-5505-41FA-A4F6-326CA348E593}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54FBA5FE-5505-41FA-A4F6-326CA348E593}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54FBA5FE-5505-41FA-A4F6-326CA348E593}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
