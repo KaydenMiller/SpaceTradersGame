@@ -1,0 +1,36 @@
+﻿@page "/universe-map"
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions.Canvas.Canvas2D
+@using Blazor.Extensions
+@inject UniverseMapGenerator MapGenerator
+
+<BECanvas Width="1000" Height="1000" @ref="_canvasReference"></BECanvas>
+
+@code {
+   private Canvas2DContext _context;
+   private BECanvasComponent _canvasReference;
+
+       private const int WIDTH = 1000;
+       private const int HEIGHT = 1000;
+
+   protected override async Task OnAfterRenderAsync(bool firstRender)
+   {
+      var centerWidth = WIDTH / 2;
+      var centerHeight = HEIGHT / 2;
+      
+      _context = await _canvasReference.CreateCanvas2DAsync();
+      await _context.SetFillStyleAsync("black");
+      await _context.FillRectAsync(10, 10, WIDTH, HEIGHT);
+      
+      await _context.AddCircle(centerWidth, centerHeight, 2);
+      
+      await _context.SetFillStyleAsync("white");
+      foreach (var waypoint in MapGenerator.GetWaypoints())
+      {
+         await _context.AddSolarSystem(waypoint.Coordinates.X + centerWidth, waypoint.Coordinates.Y + centerHeight, $"{waypoint.Name}: {waypoint.Type}");
+      }
+
+      await _context.FillAsync();
+   }
+
+}

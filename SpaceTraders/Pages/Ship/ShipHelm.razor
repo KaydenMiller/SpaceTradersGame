@@ -2,7 +2,10 @@
 @using SpaceTraders.Core
 @using SpaceTraders.Pages.ConditionalIcons
 @using SpaceTraders.Api.Ships
+@using SpaceTraders.Pages.Map
+@using System.Runtime.CompilerServices
 @inject ShipApiService ShipApiService
+@inject UniverseMapGenerator MapGenerator
 
 <MudPaper Elevation="3" Class="ma-2 pa-10">
     <MudDataGrid Items="@NearbyLocations"
@@ -22,7 +25,9 @@
                     <MudStack Row>
                         <MudButton Color="Color.Primary" 
                                    Variant="Variant.Filled"
-                                   OnClick="@(() => Navigate(context.Item.Symbol))">Navigate</MudButton>
+                                   OnClick="@(() => { AddVisitedWaypoint(context.Item);
+                                                        return Navigate(context.Item.Symbol); 
+                                            })">Navigate</MudButton>
                     </MudStack>
                 </CellTemplate>
             </TemplateColumn>
@@ -57,6 +62,12 @@
             new (Icons.Material.Filled.Storefront, HasMarketPlace(locationInfo), "Market Place"),
             new (Icons.Material.Filled.MyLocation, ShipHere(locationInfo), "Ship Location")
         };
+    }
+
+    private void AddVisitedWaypoint(LocationInfo locationInfo)
+    {
+        MapGenerator.AddWaypoint(new UniverseMapGenerator.Waypoint(locationInfo.Symbol.ToString(),
+            locationInfo.Type.ToString(), new UniverseMapGenerator.Coordinates(locationInfo.X, locationInfo.Y)));
     }
 
     private async Task Navigate(Core.Location waypoint)

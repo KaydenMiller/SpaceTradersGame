@@ -8,6 +8,7 @@ using Serilog;
 using SpaceTraders.Api;
 using SpaceTraders.Core;
 using SpaceTraders.Features.Cargo;
+using SpaceTraders.Pages.Map;
 using SpaceTraders.Pages.ShipScripts;
 
 Log.Logger = new LoggerConfiguration()
@@ -70,6 +71,7 @@ try
     });
 
     builder.Services.AddSpaceTradersApi();
+    builder.Services.AddSingleton<UniverseMapGenerator>();
 
     builder.Services.AddSingleton<LoggerFactory>();
 
